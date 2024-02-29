@@ -1,5 +1,6 @@
 
-![Echosphere Logo](assets/echosphere-logo.png)
+<img src="public/assets/echoSphereLogo.webp" width="300" height="300">
+
 
 # Echosphere
 
@@ -44,7 +45,7 @@ npm install npm@latest -g
 
 1. Clone the repo
 ```sh
-git clone https://github.com/YOUR_USERNAME/Echosphere.git
+git clone https://github.com/Edd-wordd/Echosphere.git
 ```
 2. Install NPM packages
 ```sh
@@ -76,9 +77,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Modern-edd - [@moder_edd](https://twitter.com/modern_edd)
+Modern-edd - [@modern_edd](https://twitter.com/modern_edd)
 
 Project Link: [https://github.com/Edd-wordd/Echosphere](https://github.com/Edd-wordd/Echosphere)
 ```
 
-Ensure you replace `YOUR_USERNAME`, `CI_NAME`, `YOUR_NAME`, and `@your_twitter` with your GitHub username, the name of your CI workflow (if you have one set up), your actual name, and your Twitter handle respectively.
