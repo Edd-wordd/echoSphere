@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="76dc80a7-67d6-4b04-90c2-f98f8a973b75" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/public/assets/echoShpereLogo.webp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/echoShpereLogo.webp" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/echoSphereLogo.webp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,12 +33,12 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
-                    <option name="branchName" value="24-update-readme" />
-                    <option name="lastUsedInstant" value="1709177684" />
+                    <option name="branchName" value="28-readme-erros" />
+                    <option name="lastUsedInstant" value="1709179427" />
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="master" />
-                    <option name="lastUsedInstant" value="1709177398" />
+                    <option name="lastUsedInstant" value="1709179009" />
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="2-create-react-application-skeleton-clean-up" />
@@ -82,7 +82,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "24-update-readme",
+    "git-widget-placeholder": "28-readme-erros",
     "last_opened_file_path": "/Users/eddwordd/Documents/codes/projects/echosphere",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -106,7 +106,7 @@
       <workItem from="1708836089990" duration="1466000" />
       <workItem from="1708920872528" duration="8000" />
       <workItem from="1709175022161" duration="139000" />
-      <workItem from="1709175184781" duration="2379000" />
+      <workItem from="1709175184781" duration="3084000" />
     </task>
     <servers />
   </component>
