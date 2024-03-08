@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="76dc80a7-67d6-4b04-90c2-f98f8a973b75" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,12 +31,12 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
-                    <option name="branchName" value="35-docker-compose-fix" />
-                    <option name="lastUsedInstant" value="1709877265" />
+                    <option name="branchName" value="37-readme-fix" />
+                    <option name="lastUsedInstant" value="1709877905" />
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="master" />
-                    <option name="lastUsedInstant" value="1709875107" />
+                    <option name="lastUsedInstant" value="1709877812" />
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="2-create-react-application-skeleton-clean-up" />
@@ -82,7 +80,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "35-docker-compose-fix",
+    "git-widget-placeholder": "37-readme-fix",
     "last_opened_file_path": "/Users/eddwordd/Documents/codes/projects/echosphere",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -110,7 +108,7 @@
       <workItem from="1709240634140" duration="510000" />
       <workItem from="1709257177144" duration="1043000" />
       <workItem from="1709871431195" duration="133000" />
-      <workItem from="1709874424162" duration="2116000" />
+      <workItem from="1709874424162" duration="2358000" />
     </task>
     <servers />
   </component>
