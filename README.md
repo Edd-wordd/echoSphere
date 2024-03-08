@@ -56,7 +56,61 @@ npm install
 ```sh
 npm start
 ```
+To update your README to include instructions for setting up and running your application using Docker and `docker-compose`, you'll want to add a new section that clearly outlines the steps. This will help users who prefer or require a Dockerized environment to get started with your project quickly.
 
+Here's an example of how you could structure this new section in your README:
+
+---
+
+## Docker Setup
+
+Echosphere can also be run using Docker, which simplifies the setup process and ensures consistency across different environments. This guide assumes you have Docker and Docker Compose installed on your system.
+
+### Building and Running with Docker Compose
+
+1. **Build the Docker Image**:
+
+   Navigate to the root of the project directory where the `docker-compose.yml` file is located and run:
+
+   ```sh
+   docker-compose build
+   ```
+
+   This command builds the Docker image for Echosphere, installing all required dependencies in the process.
+
+2. **Start the Application**:
+
+   Once the build is complete, you can start the application using:
+
+   ```sh
+   docker-compose up
+   ```
+
+   This command starts the application and makes it accessible at `http://localhost:3000`.
+
+3. **Stopping the Application**:
+
+   To stop the application, you can use the following command in the terminal:
+
+   ```sh
+   docker-compose down
+   ```
+
+   This will stop and remove the containers created by `docker-compose up`.
+
+### Docker Commands Breakdown
+
+- `docker-compose build`: Builds or rebuilds services specified in the `docker-compose.yml` file.
+- `docker-compose up`: Builds, (re)creates, starts, and attaches to containers for a service. If the application code has been changed, you may need to rebuild the image using `docker-compose build`.
+- `docker-compose down`: Stops and removes the containers and network, ensuring a clean state.
+
+### Notes
+
+- The first time you run the application using Docker, it may take a few minutes to build the image.
+- Make sure no other services are running on port 3000 on your machine to avoid port conflicts.
+- Hot reloading is enabled for development purposes, allowing you to see changes in real-time without restarting the Docker container.
+
+---
 ## Usage
 
 Use Echosphere to make your digital life more organized and personalized. Add or remove widgets as you see fit, and enjoy a custom digital space that truly belongs to you.
