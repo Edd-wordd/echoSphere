@@ -56,10 +56,6 @@ npm install
 ```sh
 npm start
 ```
-To update your README to include instructions for setting up and running your application using Docker and `docker-compose`, you'll want to add a new section that clearly outlines the steps. This will help users who prefer or require a Dockerized environment to get started with your project quickly.
-
-Here's an example of how you could structure this new section in your README:
-
 ---
 
 ## Docker Setup
