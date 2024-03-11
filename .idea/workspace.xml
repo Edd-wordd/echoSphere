@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="76dc80a7-67d6-4b04-90c2-f98f8a973b75" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot/chatSessions/00000000000.xd" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/copilot/chatSessions/00000000000.xd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot/chatSessions/xd.lck" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/copilot/chatSessions/xd.lck" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,12 +35,16 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
-                    <option name="branchName" value="37-readme-fix" />
-                    <option name="lastUsedInstant" value="1709877905" />
+                    <option name="branchName" value="42-gitignore-update" />
+                    <option name="lastUsedInstant" value="1710127154" />
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="master" />
-                    <option name="lastUsedInstant" value="1709877812" />
+                    <option name="lastUsedInstant" value="1709955061" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="37-readme-fix" />
+                    <option name="lastUsedInstant" value="1709877905" />
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="2-create-react-application-skeleton-clean-up" />
@@ -49,6 +57,13 @@
           </list>
         </option>
       </RecentBranches>
+    </option>
+  </component>
+  <component name="GithubProjectSettings">
+    <option name="branchProtectionPatterns">
+      <list>
+        <option value="master" />
+      </list>
     </option>
   </component>
   <component name="GithubPullRequestsUISettings">
@@ -80,14 +95,15 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "37-readme-fix",
+    "git-widget-placeholder": "42-gitignore-update",
     "last_opened_file_path": "/Users/eddwordd/Documents/codes/projects/echosphere",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "MTCustomThemeConfigurable",
+    "prettierjs.PrettierConfiguration.Package": "/usr/local/lib/node_modules/prettier",
+    "settings.editor.selected.configurable": "settings.javascript.prettier",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -109,6 +125,8 @@
       <workItem from="1709257177144" duration="1043000" />
       <workItem from="1709871431195" duration="133000" />
       <workItem from="1709874424162" duration="2358000" />
+      <workItem from="1710011760022" duration="13000" />
+      <workItem from="1710109412322" duration="2386000" />
     </task>
     <servers />
   </component>
