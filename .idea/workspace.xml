@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="76dc80a7-67d6-4b04-90c2-f98f8a973b75" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot/chatSessions/00000000000.xd" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/copilot/chatSessions/00000000000.xd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot/chatSessions/xd.lck" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/copilot/chatSessions/xd.lck" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/lint-code.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,12 +33,16 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
-                    <option name="branchName" value="42-gitignore-update" />
-                    <option name="lastUsedInstant" value="1710127154" />
+                    <option name="branchName" value="13-linting-action" />
+                    <option name="lastUsedInstant" value="1710130579" />
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="master" />
-                    <option name="lastUsedInstant" value="1709955061" />
+                    <option name="lastUsedInstant" value="1710128356" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="42-gitignore-update" />
+                    <option name="lastUsedInstant" value="1710127154" />
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="37-readme-fix" />
@@ -95,7 +97,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "42-gitignore-update",
+    "git-widget-placeholder": "13-linting-action",
     "last_opened_file_path": "/Users/eddwordd/Documents/codes/projects/echosphere",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
