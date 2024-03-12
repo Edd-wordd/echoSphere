@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="76dc80a7-67d6-4b04-90c2-f98f8a973b75" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/prettier-check.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/lint-code.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/lint-code.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -33,8 +31,7 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
-                    <option name="branchName" value="39-code-formatting-check-with-prettier-action" />
-                    <option name="lastUsedInstant" value="1710132389" />
+
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="master" />
@@ -97,7 +94,6 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "39-code-formatting-check-with-prettier-action",
     "last_opened_file_path": "/Users/eddwordd/Documents/codes/projects/echosphere",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
