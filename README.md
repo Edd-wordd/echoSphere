@@ -1,6 +1,4 @@
-
 <img src="public/assets/echoSphereLogo.webp" width="300" height="300">
-
 
 # Echosphere
 
@@ -16,8 +14,8 @@ Echosphere aims to simplify your digital life by providing a customizable platfo
 
 - [Features](#features)
 - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
@@ -37,6 +35,7 @@ To get a local copy up and running, follow these simple steps.
 ### Prerequisites
 
 - npm
+
 ```sh
 npm install npm@latest -g
 ```
@@ -44,18 +43,24 @@ npm install npm@latest -g
 ### Installation
 
 1. Clone the repo
+
 ```sh
 git clone https://github.com/Edd-wordd/Echosphere.git
 ```
+
 2. Install NPM packages
+
 ```sh
 npm install
 ```
+
 3. Set up your Firebase configuration in `firebase-config.js` with your credentials.
 4. Run the application
+
 ```sh
 npm start
 ```
+
 ---
 
 ## Docker Setup
@@ -107,6 +112,7 @@ Echosphere can also be run using Docker, which simplifies the setup process and 
 - Hot reloading is enabled for development purposes, allowing you to see changes in real-time without restarting the Docker container.
 
 ---
+
 ## Usage
 
 Use Echosphere to make your digital life more organized and personalized. Add or remove widgets as you see fit, and enjoy a custom digital space that truly belongs to you.
@@ -130,5 +136,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Modern-edd - [@modern_edd](https://twitter.com/modern_edd)
 
 Project Link: [https://github.com/Edd-wordd/Echosphere](https://github.com/Edd-wordd/Echosphere)
+
 ```
 
+```
