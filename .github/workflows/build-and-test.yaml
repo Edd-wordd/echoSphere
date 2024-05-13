@@ -1,4 +1,4 @@
-name: Build and Test
+name: CI Build and Test
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,7 +15,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'  # Updated to a newer LTS version
           cache: 'npm'
 
       - name: Install dependencies
@@ -31,4 +31,4 @@ jobs:
         run: npm run build
 
       - name: Run Tests
-        run: npm test
+        run: npm test -- --verbose  # Optional verbose flag for detailed test output
