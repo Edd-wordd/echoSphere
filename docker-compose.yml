@@ -1,14 +1,9 @@
-version: '3.8'
 services:
   echosphere:
     build: .
-    volumes:
-      - .:/App.js
-      - /App.js/node_modules
     ports:
-      - '3000:3000'
+      - "3000:3000"
+    volumes:
+      - .:/app
     environment:
-      - CHOKIDAR_USEPOLLING=true
-      - CHOKIDAR_INTERVAL=100
-
-    command: npm start
+      - NODE_ENV=development

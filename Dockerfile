@@ -1,17 +1,22 @@
+# Use a specific version of Node.js based on the Alpine Linux imagepla
 FROM node:18-alpine
-WORKDIR /App.js
 
-# Copy package.json and package-lock.json first
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy package.json and package-lock.json to utilize Docker cache
 COPY package*.json ./
 
-# Install the dependencies
+# Install dependencies in the container
 RUN npm install
 
-# Copy the rest of your application code
+# Copy the rest of your application code to the container
 COPY . .
 
-# Expose the port the app runs on
+# Expose port 3000 to be accessible from the host
 EXPOSE 3000
 
-# Start the application
+# Command to run the application
 CMD ["npm", "start"]
+
+
