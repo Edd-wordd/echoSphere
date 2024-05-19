@@ -2,7 +2,7 @@ services:
   echosphere:
     build: .
     ports:
-      - "3000:3000"
+      - '3000:3000'
     volumes:
       - .:/app
     environment:

@@ -15,7 +15,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Updated to a newer LTS version
+          node-version: '16' # Updated to a newer LTS version
           cache: 'npm'
 
       - name: Install dependencies
@@ -31,4 +31,4 @@ jobs:
         run: npm run build
 
       - name: Run Tests
-        run: npm test -- --verbose  # Optional verbose flag for detailed test output
+        run: npm test -- --verbose # Optional verbose flag for detailed test output
