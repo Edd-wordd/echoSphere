@@ -32,7 +32,13 @@ describe('Route Tests', () => {
 
     render(<App />)
 
-    const profilePageText = await screen.findByText(/Signup/i)
-    expect(profilePageText).toBeInTheDocument()
+    const loginHeading = await screen.findByRole('heading', { name: /Sign up/i })
+    expect(loginHeading).toBeInTheDocument()
+
+    const emailField = await screen.findByLabelText(/Email Address/i)
+    expect(emailField).toBeInTheDocument()
+
+    const passwordField = await screen.findByLabelText(/Password/i)
+    expect(passwordField).toBeInTheDocument()
   })
 })
