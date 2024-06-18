@@ -11,19 +11,7 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import Typography from '@mui/material/Typography'
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        echoSphere
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
+import Footer from '../../components/pages/Footer'
 
 export default function SignIn() {
   const handleSubmit = (event) => {
@@ -121,7 +109,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
             </Grid>
-            <Copyright sx={{ mt: 5 }} />
+            <Footer sx={{ mt: 5 }} />
           </Box>
         </Box>
       </Grid>

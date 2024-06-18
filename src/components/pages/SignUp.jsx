@@ -28,19 +28,7 @@ import { doc, setDoc } from 'firebase/firestore'
 import GoogleIcon from '@mui/icons-material/Google'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import FacebookIcon from '@mui/icons-material/Facebook'
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        echoSphere
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
+import Footer from '../../components/pages/Footer'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -375,7 +363,7 @@ export default function SignUp() {
           </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
+      <Footer sx={{ mt: 5 }} />
     </Container>
   )
 }
