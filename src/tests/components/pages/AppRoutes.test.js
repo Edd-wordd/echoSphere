@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import App from '../../../App'
 
 describe('Route Tests', () => {
@@ -23,8 +23,12 @@ describe('Route Tests', () => {
 
     render(<App />)
 
-    const dashboardPageText = await screen.findByText(/Dashboard/i)
-    expect(dashboardPageText).toBeInTheDocument()
+    // Use waitFor to ensure the component has fully rendered
+    await waitFor(() => {
+      // Use a more flexible matcher to find the Dashboard text
+      const dashboardPageText = screen.getByText((content, element) => /Dashboard/i.test(content))
+      expect(dashboardPageText).toBeInTheDocument()
+    })
   })
 
   test('renders Profile page when navigating to /signup', async () => {
@@ -41,4 +45,13 @@ describe('Route Tests', () => {
     const passwordField = await screen.findByLabelText(/Password/i)
     expect(passwordField).toBeInTheDocument()
   })
+})
+// src/tests/components/pages/AppRoutes.test.js
+
+jest.mock('firebase/auth', () => {
+  const actualAuth = jest.requireActual('firebase/auth')
+  return {
+    ...actualAuth,
+    getRedirectResult: jest.fn(() => Promise.resolve(null)),
+  }
 })
