@@ -14,7 +14,10 @@ import Typography from '@mui/material/Typography'
 import Footer from '../../components/pages/Footer'
 import { useState } from 'react'
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore'
-import { firestore } from '../../firebase/firebase' // Adjust the path as necessary
+import { firestore } from '../../firebase/firebase'
+import GoogleIcon from '@mui/icons-material/Google'
+import GitHubIcon from '@mui/icons-material/GitHub'
+import FacebookIcon from '@mui/icons-material/Facebook' // Adjust the path as necessary
 
 export default function SignIn() {
   const [userCredentials, setUserCredentials] = useState({
@@ -80,7 +83,7 @@ export default function SignIn() {
         component={Paper}
         elevation={6}
         square
-        sx={{ backgroundColor: '#152228' }}
+        sx={{ backgroundColor: '#f5f5f5' }}
       >
         <Box
           sx={{
@@ -139,6 +142,39 @@ export default function SignIn() {
                 </Link>
               </Grid>
             </Grid>
+            <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, mb: 2 }}>
+              <Box sx={{ flex: 1, height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.12)' }} />
+              <Typography variant="body2" sx={{ mx: 2 }}>
+                or
+              </Typography>
+              <Box sx={{ flex: 1, height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.12)' }} />
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<GoogleIcon />}
+                // onClick={handleGoogleSignIn}
+              >
+                Sign in with Google
+              </Button>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<GitHubIcon />}
+                // onClick={handleGitHubSignIn}
+              >
+                Sign in with GitHub
+              </Button>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<FacebookIcon />}
+                // onClick={handleFacebookSignIn}
+              >
+                Sign in with Facebook
+              </Button>
+            </Box>
             <Footer sx={{ mt: 5 }} />
           </Box>
         </Box>
