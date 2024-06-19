@@ -12,15 +12,46 @@ import Grid from '@mui/material/Grid'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import Typography from '@mui/material/Typography'
 import Footer from '../../components/pages/Footer'
+import { useState } from 'react'
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore'
+import { firestore } from '../../firebase/firebase' // Adjust the path as necessary
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const [userCredentials, setUserCredentials] = useState({
+    email: '',
+    password: '',
+  })
+
+  const handleChange = (e) => {
+    const { value, name } = e.target
+    setUserCredentials({ ...userCredentials, [name]: value })
+  }
+
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    })
+    try {
+      // Log the user credentials for debugging purposes
+      console.log('User credentials:', userCredentials)
+
+      // Create a query against the collection
+      const q = query(collection(firestore, 'users'), where('email', '==', userCredentials.email))
+
+      // Execute the query
+      const querySnapshot = await getDocs(q)
+
+      if (!querySnapshot.empty) {
+        // Log each document found
+        querySnapshot.forEach((doc) => {
+          console.log('User data:', doc.data())
+        })
+      } else {
+        // Log that no documents were found
+        console.log('No such user!')
+      }
+    } catch (error) {
+      // Log any errors that occur during the retrieval
+      console.error('Error fetching user data:', error)
+    }
   }
 
   return (
@@ -58,9 +89,6 @@ export default function SignIn() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            // padding: '50px 30px',
-            // border: '1px solid #f06b5c',
-            // borderRadius: '10px',
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
@@ -79,6 +107,7 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -89,6 +118,7 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={handleChange}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
