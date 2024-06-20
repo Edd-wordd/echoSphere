@@ -5,7 +5,6 @@ import MuiDrawer from '@mui/material/Drawer'
 import Box from '@mui/material/Box'
 import MuiAppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
-// import List from '@mui/material/List'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
@@ -13,15 +12,16 @@ import Badge from '@mui/material/Badge'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
-// import Link from '@mui/material/Link'
 import MenuIcon from '@mui/icons-material/Menu'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import NotificationsIcon from '@mui/icons-material/Notifications'
-import Footer from '../../components/pages/Footer'
-// import { mainListItems, secondaryListItems } from './listItems'
-// import Chart from './Chart'
-// import Deposits from './Deposits'
-// import Orders from './Orders'
+import { AccountCircle } from '@mui/icons-material'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import AccountBoxIcon from '@mui/icons-material/AccountBox'
+import SettingsIcon from '@mui/icons-material/Settings'
+import Footer from './Footer'
 
 const drawerWidth = 240
 
@@ -69,14 +69,68 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 )
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
 
 export default function Dashboard() {
   const [open, setOpen] = React.useState(true)
+  const [anchorEl, setAnchorEl] = React.useState(null)
+
   const toggleDrawer = () => {
     setOpen(!open)
   }
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleLogout = () => {
+    console.log('Logging out...')
+    setAnchorEl(null)
+  }
+
+  const isMenuOpen = Boolean(anchorEl)
+
+  const menuId = 'primary-search-account-menu'
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>
+        <ListItemIcon>
+          <AccountBoxIcon />
+        </ListItemIcon>
+        Profile
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <ListItemIcon>
+          <SettingsIcon />
+        </ListItemIcon>
+        Settings
+      </MenuItem>
+      <MenuItem onClick={handleLogout}>
+        <ListItemIcon>
+          <AccountCircle />
+        </ListItemIcon>
+        Logout
+      </MenuItem>
+    </Menu>
+  )
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -108,6 +162,16 @@ export default function Dashboard() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -124,11 +188,7 @@ export default function Dashboard() {
             </IconButton>
           </Toolbar>
           <Divider />
-          {/*<List component="nav">*/}
-          {/*  {mainListItems}*/}
-          {/*  <Divider sx={{ my: 1 }} />*/}
-          {/*  {secondaryListItems}*/}
-          {/*</List>*/}
+          {/* Add your List component here */}
         </Drawer>
         <Box
           component="main"
@@ -153,7 +213,7 @@ export default function Dashboard() {
                     height: 240,
                   }}
                 >
-                  {/*<Chart />*/}
+                  {/* Add your Chart component here */}
                 </Paper>
               </Grid>
               {/* Recent Deposits */}
@@ -166,19 +226,20 @@ export default function Dashboard() {
                     height: 240,
                   }}
                 >
-                  {/*<Deposits />*/}
+                  {/* Add your Deposits component here */}
                 </Paper>
               </Grid>
               {/* Recent Orders */}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  {/*<Orders />*/}
+                  {/* Add your Orders component here */}
                 </Paper>
               </Grid>
             </Grid>
             <Footer sx={{ pt: 4 }} />
           </Container>
         </Box>
+        {renderMenu}
       </Box>
     </ThemeProvider>
   )
