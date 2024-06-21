@@ -1,8 +1,11 @@
-// Import the functions you need from the SDKs you need
+console.log('Firebase API Key:', process.env.REACT_APP_FIREBASE_API_KEY)
+console.log('Firebase Auth Domain:', process.env.REACT_APP_FIREBASE_AUTH_DOMAIN)
+// Repeat for other environment variables
+
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
-import firebaseConfig from '../firebase/firebaseConfig' // Ensure you have this file with your config
+import firebaseConfig from './firebaseConfig'
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
