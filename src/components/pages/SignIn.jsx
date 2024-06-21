@@ -13,7 +13,7 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import Typography from '@mui/material/Typography'
 import Footer from '../../components/pages/Footer'
 import { useState, useEffect } from 'react'
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore'
+import { collection, query, where, getDocs } from 'firebase/firestore'
 import { auth, firestore } from '../../firebase/firebase'
 import GoogleIcon from '@mui/icons-material/Google'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -28,7 +28,7 @@ import {
 import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress' // Adjust the path as necessary
 import { useNavigate } from 'react-router-dom' // or your preferred routing library
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged } from 'firebase/auth'
 
 export default function SignIn() {
   const navigate = useNavigate() // useNavigate hook returns a navigate function
