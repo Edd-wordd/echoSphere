@@ -24,7 +24,7 @@ import {
   FacebookAuthProvider,
 } from 'firebase/auth'
 import { auth, firestore } from '../../firebase/firebase'
-import { doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc, getDocs, getDoc, collection, query, where } from 'firebase/firestore'
 import GoogleIcon from '@mui/icons-material/Google'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import FacebookIcon from '@mui/icons-material/Facebook'
@@ -86,7 +86,37 @@ export default function SignUp() {
         const result = await getRedirectResult(auth)
         if (result) {
           const user = result.user
-          console.log('User signed in:', user)
+
+          // Check if user document exists
+          const userDocRef = doc(firestore, 'users', user.uid)
+          const userDoc = await getDoc(userDocRef)
+
+          if (!userDoc.exists()) {
+            // Safely handle displayName and split it
+            const displayName = user.displayName ? user.displayName : ''
+            const [firstName, lastName] = displayName.split(' ')
+
+            // Create new user document in Firestore
+            const additionalUserInfo = {
+              firstName: firstName ? firstName.toLowerCase() : '',
+              lastName: lastName ? lastName.toLowerCase() : '',
+              email: user.email,
+              createdAt: new Date().toISOString(),
+              userRole: 'user',
+              lastLogin: new Date().toISOString(),
+              record: {
+                wins: 0,
+                losses: 0,
+                weeksPlayed: 0,
+                amountPaid: 0,
+                amountWon: 0,
+              },
+            }
+
+            await setDoc(userDocRef, additionalUserInfo)
+          }
+
+          console.log('User signed in and Firestore document checked/created:', user)
           navigate('/dashboard')
         }
       } catch (error) {
@@ -180,6 +210,16 @@ export default function SignUp() {
     }
 
     try {
+      // Check if the email is already in use in Firestore
+      const q = query(collection(firestore, 'users'), where('email', '==', email))
+      const querySnapshot = await getDocs(q)
+      if (!querySnapshot.empty) {
+        setErrorMessage('Email already in use.')
+        setIsSubmitting(false)
+        return
+      }
+
+      // Create new user with Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
 
