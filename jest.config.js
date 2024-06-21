@@ -4,3 +4,9 @@ module.exports = {
   setupFiles: ['<rootDir>/src/polyfill.js'],
   testEnvironment: 'jsdom',
 }
+
+// jest.config.js
+module.exports = {
+  setupFiles: ['./jest.setup.js'],
+  // Other configurations...
+}
