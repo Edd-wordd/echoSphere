@@ -11,9 +11,9 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import Typography from '@mui/material/Typography'
-import Footer from '../../components/pages/Footer'
+import Footer from '../layout/Footer'
 import { useState, useEffect } from 'react'
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { collection, query, where, getDocs, doc, setDoc, getDoc } from 'firebase/firestore'
 import { auth, firestore } from '../../firebase/firebase'
 import GoogleIcon from '@mui/icons-material/Google'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -24,14 +24,16 @@ import {
   GithubAuthProvider,
   GoogleAuthProvider,
   signInWithRedirect,
+  signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth'
 import Backdrop from '@mui/material/Backdrop'
-import CircularProgress from '@mui/material/CircularProgress' // Adjust the path as necessary
-import { useNavigate } from 'react-router-dom' // or your preferred routing library
+import CircularProgress from '@mui/material/CircularProgress'
+import { useNavigate } from 'react-router-dom'
 import { onAuthStateChanged } from 'firebase/auth'
 
 export default function SignIn() {
-  const navigate = useNavigate() // useNavigate hook returns a navigate function
+  const navigate = useNavigate()
 
   const [userCredentials, setUserCredentials] = useState({
     email: '',
@@ -53,17 +55,7 @@ export default function SignIn() {
       setIsSocialMediaSigningIn(false)
     }
   }
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, redirect to dashboard
-        navigate('/dashboard')
-      }
-    })
 
-    // Cleanup subscription on unmount
-    return () => unsubscribe()
-  }, [navigate])
   const handleGitHubSignIn = async (e) => {
     e.preventDefault()
     setIsSocialMediaSigningIn(true)
@@ -91,6 +83,44 @@ export default function SignIn() {
   }
 
   useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user && user.emailVerified) {
+        // Check if user is already in Firestore
+        const userDocRef = doc(firestore, 'users', user.uid)
+        const userDoc = await getDoc(userDocRef)
+
+        if (!userDoc.exists()) {
+          await setDoc(userDocRef, {
+            email: user.email,
+            displayName: user.displayName,
+            firstName: user.displayName.split(' ')[0].toLowerCase(),
+            lastName: user.displayName.split(' ')[1].toLowerCase(),
+            uid: user.uid,
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            userRole: 'user',
+            record: {
+              wins: 0,
+              losses: 0,
+              weeksPlayed: 0,
+              amountPaid: 0,
+              amountWon: 0,
+            },
+          })
+          console.log('User added to Firestore:', user.email)
+        }
+        navigate('/dashboard')
+      } else if (user && !user.emailVerified) {
+        setErrorMessage('Please verify your email before logging in.')
+        await signOut(auth)
+      }
+    })
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe()
+  }, [navigate])
+
+  useEffect(() => {
     let timer
     if (errorMessage) {
       timer = setTimeout(() => {
@@ -113,46 +143,73 @@ export default function SignIn() {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
 
     if (userCredentials.email === '' || userCredentials.password === '') {
-      console.log('Email or password is empty')
       setErrorMessage('Email or password is empty')
       setIsSubmitting(false)
-
       return
     }
 
     if (!emailRegex.test(userCredentials.email)) {
-      console.log('Invalid email address')
       setErrorMessage('Invalid email address')
       setIsSubmitting(false)
-
       return
     }
 
     setIsSubmitting(true)
 
     try {
-      // Log the user credentials for debugging purposes
-      console.log('User credentials:', userCredentials)
+      // Attempt to sign in the user
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        userCredentials.email,
+        userCredentials.password,
+      )
+      const user = userCredential.user
 
-      // Create a query against the collection
-      const q = query(collection(firestore, 'users'), where('email', '==', userCredentials.email))
-
-      // Execute the query
-      const querySnapshot = await getDocs(q)
-
-      if (!querySnapshot.empty) {
-        // Log each document found
-        querySnapshot.forEach((doc) => {
-          console.log('User data:', doc.data())
-        })
-      } else {
-        // Log that no documents were found
-        console.log('No such user!')
-        setErrorMessage('No such user!')
+      // Check if email is verified
+      if (!user.emailVerified) {
+        await signOut(auth)
+        setErrorMessage('Please verify your email before logging in.')
+        setIsSubmitting(false)
+        return
       }
+
+      // Check if user exists in Firestore
+      const userDocRef = doc(firestore, 'users', user.uid)
+      const userDoc = await getDoc(userDocRef)
+
+      if (!userDoc.exists()) {
+        await setDoc(userDocRef, {
+          email: user.email,
+          displayName: user.displayName,
+          firstName: user.displayName.split(' ')[0].toLowerCase(),
+          lastName: user.displayName.split(' ')[1].toLowerCase(),
+          uid: user.uid,
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString(),
+          userRole: 'user',
+          record: {
+            wins: 0,
+            losses: 0,
+            weeksPlayed: 0,
+            amountPaid: 0,
+            amountWon: 0,
+          },
+        })
+        console.log('User added to Firestore:', user.email)
+      }
+
+      navigate('/dashboard')
     } catch (error) {
-      // Log any errors that occur during the retrieval
-      console.error('Error fetching user data:', error)
+      console.error('Error during email sign-in:', error)
+      if (error.code === 'auth/user-not-found') {
+        setErrorMessage('No user found with this email.')
+      } else if (error.code === 'auth/wrong-password') {
+        setErrorMessage('Incorrect password.')
+      } else {
+        setErrorMessage('Error during sign-in. Please try again.')
+      }
+    } finally {
+      setIsSubmitting(false)
     }
   }
 

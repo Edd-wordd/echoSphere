@@ -16,19 +16,22 @@ import Backdrop from '@mui/material/Backdrop'
 import Alert from '@mui/material/Alert'
 import {
   createUserWithEmailAndPassword,
-  sendEmailVerification,
   GoogleAuthProvider,
   signInWithRedirect,
   getRedirectResult,
   GithubAuthProvider,
   FacebookAuthProvider,
+  updateProfile,
+  signOut,
 } from 'firebase/auth'
 import { auth, firestore } from '../../firebase/firebase'
-import { doc, setDoc, getDocs, getDoc, collection, query, where } from 'firebase/firestore'
+import { doc, setDoc, getDoc } from 'firebase/firestore'
 import GoogleIcon from '@mui/icons-material/Google'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import FacebookIcon from '@mui/icons-material/Facebook'
-import Footer from '../../components/pages/Footer'
+import Footer from '../layout/Footer'
+import { collection, query, where, getDocs } from 'firebase/firestore'
+import { sendEmailVerification } from 'firebase/auth'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -46,11 +49,9 @@ export default function SignUp() {
   })
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [emailSentAlert, setEmailSentAlert] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-
-  // Add a state to manage the spinner for social media sign-ins
   const [isSocialMediaSigningIn, setIsSocialMediaSigningIn] = useState(false)
+  const [emailSentAlert, setEmailSentAlert] = useState(false)
 
   useEffect(() => {
     const { firstName, lastName, email, password } = userCredentials
@@ -60,25 +61,15 @@ export default function SignUp() {
   }, [userCredentials, errors])
 
   useEffect(() => {
-    if (emailSentAlert) {
-      const timer = setTimeout(() => {
-        setEmailSentAlert(false)
-      }, 3000)
-      return () => clearTimeout(timer) // Cleanup the timeout on unmount
-    }
-  }, [emailSentAlert])
-
-  useEffect(() => {
     let timer
     if (errorMessage) {
       timer = setTimeout(() => {
         setErrorMessage('')
       }, 3000)
     }
-    return () => clearTimeout(timer) // Cleanup the timeout on unmount
+    return () => clearTimeout(timer)
   }, [errorMessage])
 
-  // Handle the redirect result in useEffect to keep the spinner visible
   useEffect(() => {
     const handleRedirectResult = async () => {
       setIsSocialMediaSigningIn(true)
@@ -87,16 +78,13 @@ export default function SignUp() {
         if (result) {
           const user = result.user
 
-          // Check if user document exists
           const userDocRef = doc(firestore, 'users', user.uid)
           const userDoc = await getDoc(userDocRef)
 
           if (!userDoc.exists()) {
-            // Safely handle displayName and split it
             const displayName = user.displayName ? user.displayName : ''
             const [firstName, lastName] = displayName.split(' ')
 
-            // Create new user document in Firestore
             const additionalUserInfo = {
               firstName: firstName ? firstName.toLowerCase() : '',
               lastName: lastName ? lastName.toLowerCase() : '',
@@ -210,7 +198,6 @@ export default function SignUp() {
     }
 
     try {
-      // Check if the email is already in use in Firestore
       const q = query(collection(firestore, 'users'), where('email', '==', email))
       const querySnapshot = await getDocs(q)
       if (!querySnapshot.empty) {
@@ -219,30 +206,14 @@ export default function SignUp() {
         return
       }
 
-      // Create new user with Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
 
-      const additionalUserInfo = {
-        firstName: firstName.toLowerCase(),
-        lastName: lastName.toLowerCase(),
-        email,
-        createdAt: new Date().toISOString(),
-        userRole: 'user',
-        lastLogin: new Date().toISOString(),
-        record: {
-          wins: 0,
-          losses: 0,
-          weeksPlayed: 0,
-          amountPaid: 0,
-          amountWon: 0,
-        },
-      }
-
-      await setDoc(doc(firestore, 'users', user.uid), additionalUserInfo)
-      await sendEmailVerification(user).then(() => {
-        setEmailSentAlert(true) // Show the email sent alert
+      await updateProfile(user, {
+        displayName: `${firstName} ${lastName}`,
       })
+
+      await sendEmailVerification(user)
 
       setUserCredentials({
         firstName: '',
@@ -250,6 +221,11 @@ export default function SignUp() {
         email: '',
         password: '',
       })
+
+      setTimeout(() => {
+        setEmailSentAlert(false)
+        navigate('/')
+      }, 3000)
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
         setErrorMessage('Email already in use.')
@@ -268,7 +244,6 @@ export default function SignUp() {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      {/* Add Backdrop for social media sign-ins */}
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={isSubmitting || isSocialMediaSigningIn}
@@ -290,7 +265,6 @@ export default function SignUp() {
           Sign up
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          {emailSentAlert && <Alert severity="success">Email verification sent!</Alert>}
           {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
