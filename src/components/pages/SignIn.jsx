@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
 import Link from '@mui/material/Link'
 import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
@@ -13,7 +11,6 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import Typography from '@mui/material/Typography'
 import Footer from '../layout/Footer'
 import { useState, useEffect } from 'react'
-import { collection, query, where, getDocs, doc, setDoc, getDoc } from 'firebase/firestore'
 import { auth, firestore } from '../../firebase/firebase'
 import GoogleIcon from '@mui/icons-material/Google'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -23,17 +20,19 @@ import {
   FacebookAuthProvider,
   GithubAuthProvider,
   GoogleAuthProvider,
-  signInWithRedirect,
+  signInWithPopup,
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth'
 import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 
 export default function SignIn() {
   const navigate = useNavigate()
+  const location = useLocation()
 
   const [userCredentials, setUserCredentials] = useState({
     email: '',
@@ -48,9 +47,11 @@ export default function SignIn() {
     setIsSocialMediaSigningIn(true)
     const provider = new GoogleAuthProvider()
     try {
-      await signInWithRedirect(auth, provider)
+      const result = await signInWithPopup(auth, provider)
+      console.log('Google sign-in result:', result)
+      navigate('/dashboard')
     } catch (error) {
-      console.error('Error during sign-in with redirect:', error)
+      console.error('Error during sign-in with popup:', error)
       setErrorMessage('Error during sign-in. Please try again.')
       setIsSocialMediaSigningIn(false)
     }
@@ -61,9 +62,11 @@ export default function SignIn() {
     setIsSocialMediaSigningIn(true)
     const provider = new GithubAuthProvider()
     try {
-      await signInWithRedirect(auth, provider)
+      const result = await signInWithPopup(auth, provider)
+      console.log('GitHub sign-in result:', result)
+      navigate('/dashboard')
     } catch (error) {
-      console.error('Error during sign-in with redirect:', error)
+      console.error('Error during sign-in with popup:', error)
       setErrorMessage('Error during sign-in. Please try again.')
       setIsSocialMediaSigningIn(false)
     }
@@ -74,9 +77,11 @@ export default function SignIn() {
     setIsSocialMediaSigningIn(true)
     const provider = new FacebookAuthProvider()
     try {
-      await signInWithRedirect(auth, provider)
+      const result = await signInWithPopup(auth, provider)
+      console.log('Facebook sign-in result:', result)
+      navigate('/dashboard')
     } catch (error) {
-      console.error('Error during sign-in with redirect:', error)
+      console.error('Error during sign-in with popup:', error)
       setErrorMessage('Error during sign-in. Please try again.')
       setIsSocialMediaSigningIn(false)
     }
@@ -90,11 +95,15 @@ export default function SignIn() {
         const userDoc = await getDoc(userDocRef)
 
         if (!userDoc.exists()) {
+          const email = user.email || 'No email provided'
+          const displayName = user.displayName || 'No name provided'
+          console.log('User displayName:', displayName)
+          console.log('User email:', email)
           await setDoc(userDocRef, {
             email: user.email,
             displayName: user.displayName,
-            firstName: user.displayName.split(' ')[0].toLowerCase(),
-            lastName: user.displayName.split(' ')[1].toLowerCase(),
+            firstName: user.displayName ? user.displayName.split(' ')[0].toLowerCase() : '',
+            lastName: user.displayName ? user.displayName.split(' ')[1].toLowerCase() : '',
             uid: user.uid,
             createdAt: new Date().toISOString(),
             lastLogin: new Date().toISOString(),
@@ -111,14 +120,15 @@ export default function SignIn() {
         }
         navigate('/dashboard')
       } else if (user && !user.emailVerified) {
-        setErrorMessage('Please verify your email before logging in.')
+        if (!location.state?.emailSent) {
+          setErrorMessage('Please verify your email before logging in.')
+        }
         await signOut(auth)
       }
     })
 
-    // Cleanup subscription on unmount
     return () => unsubscribe()
-  }, [navigate])
+  }, [navigate, location.state])
 
   useEffect(() => {
     let timer
@@ -157,7 +167,6 @@ export default function SignIn() {
     setIsSubmitting(true)
 
     try {
-      // Attempt to sign in the user
       const userCredential = await signInWithEmailAndPassword(
         auth,
         userCredentials.email,
@@ -165,7 +174,6 @@ export default function SignIn() {
       )
       const user = userCredential.user
 
-      // Check if email is verified
       if (!user.emailVerified) {
         await signOut(auth)
         setErrorMessage('Please verify your email before logging in.')
@@ -173,7 +181,6 @@ export default function SignIn() {
         return
       }
 
-      // Check if user exists in Firestore
       const userDocRef = doc(firestore, 'users', user.uid)
       const userDoc = await getDoc(userDocRef)
 
@@ -181,8 +188,8 @@ export default function SignIn() {
         await setDoc(userDocRef, {
           email: user.email,
           displayName: user.displayName,
-          firstName: user.displayName.split(' ')[0].toLowerCase(),
-          lastName: user.displayName.split(' ')[1].toLowerCase(),
+          firstName: user.displayName ? user.displayName.split(' ')[0].toLowerCase() : '',
+          lastName: user.displayName ? user.displayName.split(' ')[1].toLowerCase() : '',
           uid: user.uid,
           createdAt: new Date().toISOString(),
           lastLogin: new Date().toISOString(),
@@ -285,10 +292,6 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
               onChange={handleChange}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
             />
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign In

@@ -81,18 +81,22 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const [user, setUser] = React.useState(null)
 
+  // Toggle the drawer
   const toggleDrawer = () => {
     setOpen(!open)
   }
 
+  // Open the profile menu
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget)
   }
 
+  // Close the profile menu
   const handleMenuClose = () => {
     setAnchorEl(null)
   }
 
+  // Handle logout
   const handleLogout = async () => {
     try {
       await signOut(auth)
@@ -102,11 +106,14 @@ export default function Dashboard() {
     }
   }
 
+  // Subscribe to auth state changes
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
+        console.log('User logged in:', currentUser) // Debugging
         setUser(currentUser)
       } else {
+        console.log('No user is logged in') // Debugging
         setUser(null)
       }
     })

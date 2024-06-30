@@ -17,21 +17,18 @@ import Alert from '@mui/material/Alert'
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   GithubAuthProvider,
   FacebookAuthProvider,
   updateProfile,
-  signOut,
+  sendEmailVerification,
 } from 'firebase/auth'
 import { auth, firestore } from '../../firebase/firebase'
-import { doc, setDoc, getDoc } from 'firebase/firestore'
+import { doc, setDoc, getDoc, collection, query, where, getDocs } from 'firebase/firestore'
 import GoogleIcon from '@mui/icons-material/Google'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import FacebookIcon from '@mui/icons-material/Facebook'
 import Footer from '../layout/Footer'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { sendEmailVerification } from 'firebase/auth'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -70,62 +67,16 @@ export default function SignUp() {
     return () => clearTimeout(timer)
   }, [errorMessage])
 
-  useEffect(() => {
-    const handleRedirectResult = async () => {
-      setIsSocialMediaSigningIn(true)
-      try {
-        const result = await getRedirectResult(auth)
-        if (result) {
-          const user = result.user
-
-          const userDocRef = doc(firestore, 'users', user.uid)
-          const userDoc = await getDoc(userDocRef)
-
-          if (!userDoc.exists()) {
-            const displayName = user.displayName ? user.displayName : ''
-            const [firstName, lastName] = displayName.split(' ')
-
-            const additionalUserInfo = {
-              firstName: firstName ? firstName.toLowerCase() : '',
-              lastName: lastName ? lastName.toLowerCase() : '',
-              email: user.email,
-              createdAt: new Date().toISOString(),
-              userRole: 'user',
-              lastLogin: new Date().toISOString(),
-              record: {
-                wins: 0,
-                losses: 0,
-                weeksPlayed: 0,
-                amountPaid: 0,
-                amountWon: 0,
-              },
-            }
-
-            await setDoc(userDocRef, additionalUserInfo)
-          }
-
-          console.log('User signed in and Firestore document checked/created:', user)
-          navigate('/dashboard')
-        }
-      } catch (error) {
-        console.error('Error getting redirect result:', error)
-        setErrorMessage('Error during sign-in. Please try again.')
-      } finally {
-        setIsSocialMediaSigningIn(false)
-      }
-    }
-
-    handleRedirectResult()
-  }, [navigate])
-
   const handleGoogleSignIn = async (e) => {
     e.preventDefault()
     setIsSocialMediaSigningIn(true)
     const provider = new GoogleAuthProvider()
     try {
-      await signInWithRedirect(auth, provider)
+      const result = await signInWithPopup(auth, provider)
+      console.log('Google sign-in result:', result)
+      navigate('/dashboard')
     } catch (error) {
-      console.error('Error during sign-in with redirect:', error)
+      console.error('Error during sign-in with popup:', error)
       setErrorMessage('Error during sign-in. Please try again.')
       setIsSocialMediaSigningIn(false)
     }
@@ -136,9 +87,11 @@ export default function SignUp() {
     setIsSocialMediaSigningIn(true)
     const provider = new GithubAuthProvider()
     try {
-      await signInWithRedirect(auth, provider)
+      const result = await signInWithPopup(auth, provider)
+      console.log('GitHub sign-in result:', result)
+      navigate('/dashboard')
     } catch (error) {
-      console.error('Error during sign-in with redirect:', error)
+      console.error('Error during sign-in with popup:', error)
       setErrorMessage('Error during sign-in. Please try again.')
       setIsSocialMediaSigningIn(false)
     }
@@ -149,9 +102,11 @@ export default function SignUp() {
     setIsSocialMediaSigningIn(true)
     const provider = new FacebookAuthProvider()
     try {
-      await signInWithRedirect(auth, provider)
+      const result = await signInWithPopup(auth, provider)
+      console.log('Facebook sign-in result:', result)
+      navigate('/dashboard')
     } catch (error) {
-      console.error('Error during sign-in with redirect:', error)
+      console.error('Error during sign-in with popup:', error)
       setErrorMessage('Error during sign-in. Please try again.')
       setIsSocialMediaSigningIn(false)
     }
@@ -163,7 +118,7 @@ export default function SignUp() {
     setUserCredentials((prev) => {
       const updatedCredentials = {
         ...prev,
-        [name]: value,
+        [name]: value.trim(),
       }
 
       if (name === 'email') {
@@ -175,7 +130,7 @@ export default function SignUp() {
       }
 
       if (name === 'firstName' || name === 'lastName') {
-        const nameRegex = /^[a-zA-Z]+$/
+        const nameRegex = /^[a-zA-Z\s]+$/
         setErrors((prevErrors) => ({
           ...prevErrors,
           [name]: nameRegex.test(value) ? '' : 'Invalid name format',
@@ -222,9 +177,11 @@ export default function SignUp() {
         password: '',
       })
 
+      setEmailSentAlert(true)
+
       setTimeout(() => {
         setEmailSentAlert(false)
-        navigate('/')
+        navigate('/', { state: { emailSent: true } })
       }, 3000)
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
@@ -266,6 +223,11 @@ export default function SignUp() {
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+          {emailSentAlert && (
+            <Alert severity="success">
+              Email verification has been sent. Please check your email.
+            </Alert>
+          )}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
