@@ -5,7 +5,7 @@ import { auth } from '../../firebase/firebase'
 import CircularProgress from '@mui/material/CircularProgress'
 
 const ProtectedRoute = ({ children }) => {
-  const [user, loading, error] = useAuthState(auth)
+  const [user, loading] = useAuthState(auth)
 
   if (loading) {
     return <CircularProgress />

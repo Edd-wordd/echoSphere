@@ -1,4 +1,5 @@
-import * as React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -10,34 +11,27 @@ import Grid from '@mui/material/Grid'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import Typography from '@mui/material/Typography'
 import Footer from '../layout/Footer'
-import { useState, useEffect } from 'react'
-import { auth, firestore } from '../../firebase/firebase'
+import Alert from '@mui/material/Alert'
+import Backdrop from '@mui/material/Backdrop'
+import CircularProgress from '@mui/material/CircularProgress'
 import GoogleIcon from '@mui/icons-material/Google'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import FacebookIcon from '@mui/icons-material/Facebook'
-import Alert from '@mui/material/Alert'
 import {
+  getAuth,
   FacebookAuthProvider,
   GithubAuthProvider,
   GoogleAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
 } from 'firebase/auth'
-import Backdrop from '@mui/material/Backdrop'
-import CircularProgress from '@mui/material/CircularProgress'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { doc, setDoc, getDoc } from 'firebase/firestore'
-import { onAuthStateChanged } from 'firebase/auth'
+import { processUserData } from '../utilis/ProcessUserData'
 
 export default function SignIn() {
   const navigate = useNavigate()
-  const location = useLocation()
-
-  const [userCredentials, setUserCredentials] = useState({
-    email: '',
-    password: '',
-  })
+  const [userCredentials, setUserCredentials] = useState({ email: '', password: '' })
   const [errorMessage, setErrorMessage] = useState('')
   const [isSocialMediaSigningIn, setIsSocialMediaSigningIn] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -47,8 +41,8 @@ export default function SignIn() {
     setIsSocialMediaSigningIn(true)
     const provider = new GoogleAuthProvider()
     try {
-      const result = await signInWithPopup(auth, provider)
-      console.log('Google sign-in result:', result)
+      const result = await signInWithPopup(getAuth(), provider)
+      await processUserData(result.user)
       navigate('/dashboard')
     } catch (error) {
       console.error('Error during sign-in with popup:', error)
@@ -62,8 +56,8 @@ export default function SignIn() {
     setIsSocialMediaSigningIn(true)
     const provider = new GithubAuthProvider()
     try {
-      const result = await signInWithPopup(auth, provider)
-      console.log('GitHub sign-in result:', result)
+      const result = await signInWithPopup(getAuth(), provider)
+      await processUserData(result.user)
       navigate('/dashboard')
     } catch (error) {
       console.error('Error during sign-in with popup:', error)
@@ -77,8 +71,8 @@ export default function SignIn() {
     setIsSocialMediaSigningIn(true)
     const provider = new FacebookAuthProvider()
     try {
-      const result = await signInWithPopup(auth, provider)
-      console.log('Facebook sign-in result:', result)
+      const result = await signInWithPopup(getAuth(), provider)
+      await processUserData(result.user)
       navigate('/dashboard')
     } catch (error) {
       console.error('Error during sign-in with popup:', error)
@@ -88,47 +82,18 @@ export default function SignIn() {
   }
 
   useEffect(() => {
+    const auth = getAuth()
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user && user.emailVerified) {
-        // Check if user is already in Firestore
-        const userDocRef = doc(firestore, 'users', user.uid)
-        const userDoc = await getDoc(userDocRef)
-
-        if (!userDoc.exists()) {
-          const email = user.email || 'No email provided'
-          const displayName = user.displayName || 'No name provided'
-          console.log('User displayName:', displayName)
-          console.log('User email:', email)
-          await setDoc(userDocRef, {
-            email: user.email,
-            displayName: user.displayName,
-            firstName: user.displayName ? user.displayName.split(' ')[0].toLowerCase() : '',
-            lastName: user.displayName ? user.displayName.split(' ')[1].toLowerCase() : '',
-            uid: user.uid,
-            createdAt: new Date().toISOString(),
-            lastLogin: new Date().toISOString(),
-            userRole: 'user',
-            record: {
-              wins: 0,
-              losses: 0,
-              weeksPlayed: 0,
-              amountPaid: 0,
-              amountWon: 0,
-            },
-          })
-          console.log('User added to Firestore:', user.email)
-        }
+      if (user) {
+        await processUserData(user)
         navigate('/dashboard')
-      } else if (user && !user.emailVerified) {
-        if (!location.state?.emailSent) {
-          setErrorMessage('Please verify your email before logging in.')
-        }
-        await signOut(auth)
       }
     })
 
-    return () => unsubscribe()
-  }, [navigate, location.state])
+    return () => {
+      if (unsubscribe) unsubscribe()
+    }
+  }, [navigate])
 
   useEffect(() => {
     let timer
@@ -168,43 +133,20 @@ export default function SignIn() {
 
     try {
       const userCredential = await signInWithEmailAndPassword(
-        auth,
+        getAuth(),
         userCredentials.email,
         userCredentials.password,
       )
       const user = userCredential.user
 
       if (!user.emailVerified) {
-        await signOut(auth)
+        await signOut(getAuth())
         setErrorMessage('Please verify your email before logging in.')
         setIsSubmitting(false)
         return
       }
 
-      const userDocRef = doc(firestore, 'users', user.uid)
-      const userDoc = await getDoc(userDocRef)
-
-      if (!userDoc.exists()) {
-        await setDoc(userDocRef, {
-          email: user.email,
-          displayName: user.displayName,
-          firstName: user.displayName ? user.displayName.split(' ')[0].toLowerCase() : '',
-          lastName: user.displayName ? user.displayName.split(' ')[1].toLowerCase() : '',
-          uid: user.uid,
-          createdAt: new Date().toISOString(),
-          lastLogin: new Date().toISOString(),
-          userRole: 'user',
-          record: {
-            wins: 0,
-            losses: 0,
-            weeksPlayed: 0,
-            amountPaid: 0,
-            amountWon: 0,
-          },
-        })
-        console.log('User added to Firestore:', user.email)
-      }
-
+      await processUserData(user)
       navigate('/dashboard')
     } catch (error) {
       console.error('Error during email sign-in:', error)

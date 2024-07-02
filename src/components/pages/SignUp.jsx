@@ -1,34 +1,39 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
-import CssBaseline from '@mui/material/CssBaseline'
-import TextField from '@mui/material/TextField'
-import Link from '@mui/material/Link'
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
-import CircularProgress from '@mui/material/CircularProgress'
-import Backdrop from '@mui/material/Backdrop'
-import Alert from '@mui/material/Alert'
+import { auth } from '../../firebase/firebase'
 import {
-  createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup,
   GithubAuthProvider,
   FacebookAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
   updateProfile,
   sendEmailVerification,
 } from 'firebase/auth'
-import { auth, firestore } from '../../firebase/firebase'
-import { doc, setDoc, getDoc, collection, query, where, getDocs } from 'firebase/firestore'
-import GoogleIcon from '@mui/icons-material/Google'
-import GitHubIcon from '@mui/icons-material/GitHub'
-import FacebookIcon from '@mui/icons-material/Facebook'
+import { collection, query, where, getDocs } from 'firebase/firestore'
+import {
+  Grid,
+  Box,
+  CssBaseline,
+  Avatar,
+  Typography,
+  TextField,
+  Button,
+  Link,
+  Container,
+  Alert,
+  Backdrop,
+  CircularProgress,
+} from '@mui/material'
+import {
+  LockOutlined as LockOutlinedIcon,
+  Google as GoogleIcon,
+  GitHub as GitHubIcon,
+  Facebook as FacebookIcon,
+} from '@mui/icons-material'
 import Footer from '../layout/Footer'
+import { firestore } from '../../firebase/firebase'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -38,12 +43,7 @@ export default function SignUp() {
     email: '',
     password: '',
   })
-  const [errors, setErrors] = useState({
-    email: '',
-    password: '',
-    lastName: '',
-    firstName: '',
-  })
+  const [errors, setErrors] = useState({ email: '', password: '', lastName: '', firstName: '' })
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -116,10 +116,7 @@ export default function SignUp() {
     const { name, value } = e.target
 
     setUserCredentials((prev) => {
-      const updatedCredentials = {
-        ...prev,
-        [name]: value.trim(),
-      }
+      const updatedCredentials = { ...prev, [name]: value.trim() }
 
       if (name === 'email') {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -164,18 +161,11 @@ export default function SignUp() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
 
-      await updateProfile(user, {
-        displayName: `${firstName} ${lastName}`,
-      })
+      await updateProfile(user, { displayName: `${firstName} ${lastName}` })
 
       await sendEmailVerification(user)
 
-      setUserCredentials({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-      })
+      setUserCredentials({ firstName: '', lastName: '', email: '', password: '' })
 
       setEmailSentAlert(true)
 
@@ -207,14 +197,7 @@ export default function SignUp() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlinedIcon />
         </Avatar>
