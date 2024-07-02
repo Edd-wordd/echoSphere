@@ -1,42 +1,37 @@
-import * as React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
 import Link from '@mui/material/Link'
 import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
 import Typography from '@mui/material/Typography'
-import Footer from '../../components/pages/Footer'
-import { useState, useEffect } from 'react'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { auth, firestore } from '../../firebase/firebase'
+import Footer from '../layout/Footer'
+import Alert from '@mui/material/Alert'
+import Backdrop from '@mui/material/Backdrop'
+import CircularProgress from '@mui/material/CircularProgress'
 import GoogleIcon from '@mui/icons-material/Google'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import FacebookIcon from '@mui/icons-material/Facebook'
-import Alert from '@mui/material/Alert'
 import {
+  getAuth,
   FacebookAuthProvider,
   GithubAuthProvider,
   GoogleAuthProvider,
-  signInWithRedirect,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
 } from 'firebase/auth'
-import Backdrop from '@mui/material/Backdrop'
-import CircularProgress from '@mui/material/CircularProgress' // Adjust the path as necessary
-import { useNavigate } from 'react-router-dom' // or your preferred routing library
-import { onAuthStateChanged } from 'firebase/auth'
+import { processUserData } from '../utilis/ProcessUserData'
 
 export default function SignIn() {
-  const navigate = useNavigate() // useNavigate hook returns a navigate function
-
-  const [userCredentials, setUserCredentials] = useState({
-    email: '',
-    password: '',
-  })
+  const navigate = useNavigate()
+  const [userCredentials, setUserCredentials] = useState({ email: '', password: '' })
   const [errorMessage, setErrorMessage] = useState('')
   const [isSocialMediaSigningIn, setIsSocialMediaSigningIn] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -46,32 +41,26 @@ export default function SignIn() {
     setIsSocialMediaSigningIn(true)
     const provider = new GoogleAuthProvider()
     try {
-      await signInWithRedirect(auth, provider)
+      const result = await signInWithPopup(getAuth(), provider)
+      await processUserData(result.user)
+      navigate('/dashboard')
     } catch (error) {
-      console.error('Error during sign-in with redirect:', error)
+      console.error('Error during sign-in with popup:', error)
       setErrorMessage('Error during sign-in. Please try again.')
       setIsSocialMediaSigningIn(false)
     }
   }
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, redirect to dashboard
-        navigate('/dashboard')
-      }
-    })
 
-    // Cleanup subscription on unmount
-    return () => unsubscribe()
-  }, [navigate])
   const handleGitHubSignIn = async (e) => {
     e.preventDefault()
     setIsSocialMediaSigningIn(true)
     const provider = new GithubAuthProvider()
     try {
-      await signInWithRedirect(auth, provider)
+      const result = await signInWithPopup(getAuth(), provider)
+      await processUserData(result.user)
+      navigate('/dashboard')
     } catch (error) {
-      console.error('Error during sign-in with redirect:', error)
+      console.error('Error during sign-in with popup:', error)
       setErrorMessage('Error during sign-in. Please try again.')
       setIsSocialMediaSigningIn(false)
     }
@@ -82,13 +71,29 @@ export default function SignIn() {
     setIsSocialMediaSigningIn(true)
     const provider = new FacebookAuthProvider()
     try {
-      await signInWithRedirect(auth, provider)
+      const result = await signInWithPopup(getAuth(), provider)
+      await processUserData(result.user)
+      navigate('/dashboard')
     } catch (error) {
-      console.error('Error during sign-in with redirect:', error)
+      console.error('Error during sign-in with popup:', error)
       setErrorMessage('Error during sign-in. Please try again.')
       setIsSocialMediaSigningIn(false)
     }
   }
+
+  useEffect(() => {
+    const auth = getAuth()
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await processUserData(user)
+        navigate('/dashboard')
+      }
+    })
+
+    return () => {
+      if (unsubscribe) unsubscribe()
+    }
+  }, [navigate])
 
   useEffect(() => {
     let timer
@@ -113,46 +118,47 @@ export default function SignIn() {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
 
     if (userCredentials.email === '' || userCredentials.password === '') {
-      console.log('Email or password is empty')
       setErrorMessage('Email or password is empty')
       setIsSubmitting(false)
-
       return
     }
 
     if (!emailRegex.test(userCredentials.email)) {
-      console.log('Invalid email address')
       setErrorMessage('Invalid email address')
       setIsSubmitting(false)
-
       return
     }
 
     setIsSubmitting(true)
 
     try {
-      // Log the user credentials for debugging purposes
-      console.log('User credentials:', userCredentials)
+      const userCredential = await signInWithEmailAndPassword(
+        getAuth(),
+        userCredentials.email,
+        userCredentials.password,
+      )
+      const user = userCredential.user
 
-      // Create a query against the collection
-      const q = query(collection(firestore, 'users'), where('email', '==', userCredentials.email))
-
-      // Execute the query
-      const querySnapshot = await getDocs(q)
-
-      if (!querySnapshot.empty) {
-        // Log each document found
-        querySnapshot.forEach((doc) => {
-          console.log('User data:', doc.data())
-        })
-      } else {
-        // Log that no documents were found
-        console.log('No such user!')
-        setErrorMessage('No such user!')
+      if (!user.emailVerified) {
+        await signOut(getAuth())
+        setErrorMessage('Please verify your email before logging in.')
+        setIsSubmitting(false)
+        return
       }
+
+      await processUserData(user)
+      navigate('/dashboard')
     } catch (error) {
-      // Log any errors that occur during the retrieval
-      console.error('Error fetching user data:', error)
+      console.error('Error during email sign-in:', error)
+      if (error.code === 'auth/user-not-found') {
+        setErrorMessage('No user found with this email.')
+      } else if (error.code === 'auth/wrong-password') {
+        setErrorMessage('Incorrect password.')
+      } else {
+        setErrorMessage('Error during sign-in. Please try again.')
+      }
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -228,10 +234,6 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
               onChange={handleChange}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
             />
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign In

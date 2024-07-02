@@ -21,7 +21,11 @@ import MenuItem from '@mui/material/MenuItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import SettingsIcon from '@mui/icons-material/Settings'
-import Footer from './Footer'
+import Footer from '../layout/Footer'
+import { signOut } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
+import { auth } from '../../firebase/firebase'
+import { onAuthStateChanged } from 'firebase/auth'
 
 const drawerWidth = 240
 
@@ -74,23 +78,47 @@ const defaultTheme = createTheme()
 export default function Dashboard() {
   const [open, setOpen] = React.useState(true)
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const navigate = useNavigate()
+  const [user, setUser] = React.useState(null)
 
+  // Toggle the drawer
   const toggleDrawer = () => {
     setOpen(!open)
   }
 
+  // Open the profile menu
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget)
   }
 
+  // Close the profile menu
   const handleMenuClose = () => {
     setAnchorEl(null)
   }
 
-  const handleLogout = () => {
-    console.log('Logging out...')
-    setAnchorEl(null)
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+      navigate('/')
+    } catch (error) {
+      console.error('Error during logout:', error)
+    }
   }
+
+  // Subscribe to auth state changes
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        console.log('User logged in:', currentUser) // Debugging
+        setUser(currentUser)
+      } else {
+        console.log('No user is logged in') // Debugging
+        setUser(null)
+      }
+    })
+    return () => unsubscribe()
+  }, [])
 
   const isMenuOpen = Boolean(anchorEl)
 
@@ -155,7 +183,7 @@ export default function Dashboard() {
               <MenuIcon />
             </IconButton>
             <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-              UserName goes here Dashboard
+              {user ? `${user.displayName}'s Dashboard` : 'Dashboard'}
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
