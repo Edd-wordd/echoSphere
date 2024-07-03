@@ -12,6 +12,7 @@ import Badge from '@mui/material/Badge'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
+import List from '@mui/material/List'
 import MenuIcon from '@mui/icons-material/Menu'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import NotificationsIcon from '@mui/icons-material/Notifications'
@@ -26,6 +27,8 @@ import { signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../../firebase/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
+import { MainListItems, SecondaryListItems } from '../layout/ListItems'
+import UsersDetails from '../users/UsersDetails'
 
 const drawerWidth = 240
 
@@ -78,6 +81,7 @@ const defaultTheme = createTheme()
 export default function Dashboard() {
   const [open, setOpen] = React.useState(true)
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [selectedComponent, setSelectedComponent] = React.useState('Dashboard')
   const navigate = useNavigate()
   const [user, setUser] = React.useState(null)
 
@@ -160,6 +164,23 @@ export default function Dashboard() {
     </Menu>
   )
 
+  const renderSelectedComponent = () => {
+    switch (selectedComponent) {
+      case 'Dashboard':
+        return <div>Dashboard Content</div>
+      case 'Users':
+        return <UsersDetails />
+      case 'Current Week':
+        return <div>Current Week Content</div>
+      case 'HadiCapping':
+        return <div>HadiCapping Content</div>
+      case 'Rules':
+        return <div>Rules Content</div>
+      default:
+        return <div>Dashboard Content</div>
+    }
+  }
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -216,7 +237,11 @@ export default function Dashboard() {
             </IconButton>
           </Toolbar>
           <Divider />
-          {/* Add your List component here */}
+          <List component="nav">
+            <MainListItems onSelectItem={setSelectedComponent} />
+            <Divider sx={{ my: 1 }} />
+            <SecondaryListItems onSelectItem={setSelectedComponent} />
+          </List>
         </Drawer>
         <Box
           component="main"
@@ -231,36 +256,10 @@ export default function Dashboard() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  {/* Add your Chart component here */}
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  {/* Add your Deposits component here */}
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
+              {/* Main Content */}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  {/* Add your Orders component here */}
+                  {renderSelectedComponent()}
                 </Paper>
               </Grid>
             </Grid>
