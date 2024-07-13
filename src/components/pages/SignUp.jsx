@@ -10,6 +10,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   sendEmailVerification,
+  signOut,
 } from 'firebase/auth'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import {
@@ -169,9 +170,12 @@ export default function SignUp() {
 
       setEmailSentAlert(true)
 
+      // Sign out the user after sending the email verification
+      await signOut(auth)
+
       setTimeout(() => {
         setEmailSentAlert(false)
-        navigate('/', { state: { emailSent: true } })
+        navigate('/') // Redirect to the sign-in page
       }, 3000)
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {

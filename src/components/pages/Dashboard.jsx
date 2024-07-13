@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import MuiDrawer from '@mui/material/Drawer'
 import Box from '@mui/material/Box'
@@ -29,6 +29,11 @@ import { auth } from '../../firebase/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { MainListItems, SecondaryListItems } from '../layout/ListItems'
 import UsersDetails from '../users/UsersDetails'
+import MatchUps from '../gameData/MatchUps'
+import RulesData from '../gameData/RulesData'
+import HadiCapping from '../gameData/HandiCapping'
+import SuperBowl from '../gameData/SuperBowl'
+import UsersDashboard from '../users/UsersDashboard'
 
 const drawerWidth = 240
 
@@ -75,8 +80,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     },
   }),
 )
-
-const defaultTheme = createTheme()
 
 export default function Dashboard() {
   const [open, setOpen] = React.useState(true)
@@ -167,107 +170,107 @@ export default function Dashboard() {
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
       case 'Dashboard':
-        return <div>Dashboard Content</div>
+        return <UsersDashboard />
       case 'Users':
         return <UsersDetails />
-      case 'Current Week':
-        return <div>Current Week Content</div>
+      case 'MatchUps':
+        return <MatchUps />
       case 'HadiCapping':
-        return <div>HadiCapping Content</div>
+        return <HadiCapping />
       case 'Rules':
-        return <div>Rules Content</div>
+        return <RulesData />
+      case 'SuperBowl':
+        return <SuperBowl />
       default:
         return <div>Dashboard Content</div>
     }
   }
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <AppBar position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: '24px', // keep right padding when drawer closed
-            }}
-          >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-              {user ? `${user.displayName}'s Dashboard` : 'Dashboard'}
-            </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Drawer variant="permanent" open={open}>
-          <Toolbar
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              px: [1],
-            }}
-          >
-            <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </Toolbar>
-          <Divider />
-          <List component="nav">
-            <MainListItems onSelectItem={setSelectedComponent} />
-            <Divider sx={{ my: 1 }} />
-            <SecondaryListItems onSelectItem={setSelectedComponent} />
-          </List>
-        </Drawer>
-        <Box
-          component="main"
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar position="absolute" open={open}>
+        <Toolbar
           sx={{
-            backgroundColor: (theme) =>
-              theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
-            flexGrow: 1,
-            height: '100vh',
-            overflow: 'auto',
+            pr: '24px', // keep right padding when drawer closed
           }}
         >
-          <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Main Content */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  {renderSelectedComponent()}
-                </Paper>
-              </Grid>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={toggleDrawer}
+            sx={{
+              marginRight: '36px',
+              ...(open && { display: 'none' }),
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
+            {user ? `${user.displayName}'s Dashboard` : 'Dashboard'}
+          </Typography>
+          <IconButton color="inherit">
+            <Badge badgeContent={4} color="secondary">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
+          <IconButton
+            edge="end"
+            aria-label="account of current user"
+            aria-controls={menuId}
+            aria-haspopup="true"
+            onClick={handleProfileMenuOpen}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <Drawer variant="permanent" open={open}>
+        <Toolbar
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            px: [1],
+          }}
+        >
+          <IconButton onClick={toggleDrawer}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </Toolbar>
+        <Divider />
+        <List component="nav">
+          <MainListItems onSelectItem={setSelectedComponent} />
+          <Divider sx={{ my: 1 }} />
+          <SecondaryListItems onSelectItem={setSelectedComponent} />
+        </List>
+      </Drawer>
+      <Box
+        component="main"
+        sx={{
+          backgroundColor: (theme) =>
+            theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
+          flexGrow: 1,
+          height: '100vh',
+          overflow: 'auto',
+        }}
+      >
+        <Toolbar />
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Grid container spacing={3}>
+            {/* Main Content */}
+            <Grid item xs={12}>
+              <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                {renderSelectedComponent()}
+              </Paper>
             </Grid>
-            <Footer sx={{ pt: 4 }} />
-          </Container>
-        </Box>
-        {renderMenu}
+          </Grid>
+          <Footer sx={{ pt: 4 }} />
+        </Container>
       </Box>
-    </ThemeProvider>
+      {renderMenu}
+    </Box>
   )
 }
