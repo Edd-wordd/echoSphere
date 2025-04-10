@@ -13,6 +13,7 @@ const EmailVerificationHandler = ({ children }) => {
   useEffect(() => {
     const processUser = async () => {
       if (user) {
+        rv
         const userDocRef = doc(firestore, 'users', user.uid)
         const userDoc = await getDoc(userDocRef)
 

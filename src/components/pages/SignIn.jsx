@@ -29,6 +29,8 @@ import {
 } from 'firebase/auth'
 import { processUserData } from '../utilis/ProcessUserData'
 
+// TODO need to add the forgot password functionality and the error feedback to the user when the user is not found or the password is incorrect
+
 export default function SignIn() {
   const navigate = useNavigate()
   const [userCredentials, setUserCredentials] = useState({ email: '', password: '' })

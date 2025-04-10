@@ -52,7 +52,8 @@ function App() {
     //   <CssBaseline />
     <Router>
       <Routes>
-        <Route path="/" element={<SignIn />} />
+        {/* May need to add a admin route here could potentially be used for admin dashboard with / route */}
+        <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route
           path="/dashboard"
