@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Typography,
   Grid,
   Box,
-  Paper,
-  Tabs,
-  Tab,
+  // Paper,
+  // Tabs,
+  // Tab,
   Card,
   CardContent,
   LinearProgress,
@@ -38,9 +38,9 @@ const TicketFooter = styled(Box)({
   marginTop: '10px',
 })
 
-const StyledTabs = styled(Tabs)({
-  marginBottom: '20px',
-})
+// const StyledTabs = styled(Tabs)({
+//   marginBottom: '20px',
+// })
 
 const StatCard = styled(Card)({
   padding: '20px',
