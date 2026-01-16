@@ -45,8 +45,15 @@ export default function SignUp() {
     lastName: '',
     email: '',
     password: '',
+    confirmPassword: '',
   })
-  const [errors, setErrors] = useState({ email: '', password: '', lastName: '', firstName: '' })
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    lastName: '',
+    firstName: '',
+  })
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -55,9 +62,14 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
-    const { firstName, lastName, email, password } = userCredentials
-    const hasErrors = !!errors.firstName || !!errors.lastName || !!errors.email || !!errors.password
-    const allFieldsFilled = firstName && lastName && email && password
+    const { firstName, lastName, email, password, confirmPassword } = userCredentials
+    const hasErrors =
+      !!errors.firstName ||
+      !!errors.lastName ||
+      !!errors.email ||
+      !!errors.password ||
+      !!errors.confirmPassword
+    const allFieldsFilled = firstName && lastName && email && password && confirmPassword
     setIsSubmitDisabled(hasErrors || !allFieldsFilled)
   }, [userCredentials, errors])
 
@@ -145,6 +157,17 @@ export default function SignUp() {
           password: passwordRegex.test(value)
             ? ''
             : 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+          confirmPassword:
+            updatedCredentials.confirmPassword && value !== updatedCredentials.confirmPassword
+              ? 'Passwords do not match'
+              : '',
+        }))
+      }
+
+      if (name === 'confirmPassword') {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          confirmPassword: value !== updatedCredentials.password ? 'Passwords do not match' : '',
         }))
       }
       return updatedCredentials
@@ -157,7 +180,13 @@ export default function SignUp() {
 
     setIsSubmitting(true)
 
-    if (errors.email || errors.firstName || errors.lastName) {
+    if (
+      errors.email ||
+      errors.firstName ||
+      errors.lastName ||
+      errors.confirmPassword ||
+      password !== userCredentials.confirmPassword
+    ) {
       console.log('Invalid form')
       setIsSubmitting(false)
       return
@@ -199,7 +228,13 @@ export default function SignUp() {
       // Send verification email
       await sendEmailVerification(user)
 
-      setUserCredentials({ firstName: '', lastName: '', email: '', password: '' })
+      setUserCredentials({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      })
       setEmailSentAlert(true)
 
       // Sign out the user after sending the email verification
@@ -307,6 +342,34 @@ export default function SignUp() {
                 helperText={errors.password}
                 error={!!errors.password}
                 value={userCredentials.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                name="confirmPassword"
+                label="Confirm Password"
+                type={showPassword ? 'text' : 'password'}
+                id="confirmPassword"
+                autoComplete="new-password"
+                onChange={handleChange}
+                helperText={errors.confirmPassword}
+                error={!!errors.confirmPassword}
+                value={userCredentials.confirmPassword}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
