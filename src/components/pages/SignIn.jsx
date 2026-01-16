@@ -15,12 +15,12 @@ import Alert from '@mui/material/Alert'
 import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
 import GoogleIcon from '@mui/icons-material/Google'
-import GitHubIcon from '@mui/icons-material/GitHub'
+// import GitHubIcon from '@mui/icons-material/GitHub'
 import FacebookIcon from '@mui/icons-material/Facebook'
 import {
   getAuth,
   FacebookAuthProvider,
-  GithubAuthProvider,
+  // GithubAuthProvider,
   GoogleAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
@@ -53,20 +53,20 @@ export default function SignIn() {
     }
   }
 
-  const handleGitHubSignIn = async (e) => {
-    e.preventDefault()
-    setIsSocialMediaSigningIn(true)
-    const provider = new GithubAuthProvider()
-    try {
-      const result = await signInWithPopup(getAuth(), provider)
-      await processUserData(result.user)
-      navigate('/dashboard')
-    } catch (error) {
-      console.error('Error during sign-in with popup:', error)
-      setErrorMessage('Error during sign-in. Please try again.')
-      setIsSocialMediaSigningIn(false)
-    }
-  }
+  // const handleGitHubSignIn = async (e) => {
+  //   e.preventDefault()
+  //   setIsSocialMediaSigningIn(true)
+  //   const provider = new GithubAuthProvider()
+  //   try {
+  //     const result = await signInWithPopup(getAuth(), provider)
+  //     await processUserData(result.user)
+  //     navigate('/dashboard')
+  //   } catch (error) {
+  //     console.error('Error during sign-in with popup:', error)
+  //     setErrorMessage('Error during sign-in. Please try again.')
+  //     setIsSocialMediaSigningIn(false)
+  //   }
+  // }
 
   const handleFacebookSignIn = async (e) => {
     e.preventDefault()
@@ -268,14 +268,14 @@ export default function SignIn() {
               >
                 Sign in with Google
               </Button>
-              <Button
+              {/* <Button
                 fullWidth
                 variant="outlined"
                 startIcon={<GitHubIcon />}
                 onClick={handleGitHubSignIn}
               >
                 Sign in with GitHub
-              </Button>
+              </Button> */}
               <Button
                 fullWidth
                 variant="outlined"

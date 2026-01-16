@@ -13,7 +13,6 @@ const EmailVerificationHandler = ({ children }) => {
   useEffect(() => {
     const processUser = async () => {
       if (user) {
-        rv
         const userDocRef = doc(firestore, 'users', user.uid)
         const userDoc = await getDoc(userDocRef)
 
@@ -28,6 +27,7 @@ const EmailVerificationHandler = ({ children }) => {
             lastName,
             email: user.email,
             createdAt: new Date().toISOString(),
+
             userRole: 'user',
             lastLogin: new Date().toISOString(),
             record: {

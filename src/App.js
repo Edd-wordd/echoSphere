@@ -7,6 +7,7 @@ import SignIn from './components/pages/SignIn'
 import Dashboard from './components/pages/Dashboard'
 import EmailVerificationHandler from './components/auth/EmailVerificationHandler'
 import HadiCapping from './components/gameData/HandiCapping' // Assuming HadiCapping is a page component
+import Admin from './components/pages/Admin'
 
 // const darkTheme = createTheme({
 //   palette: {
@@ -53,6 +54,7 @@ function App() {
     <Router>
       <Routes>
         {/* May need to add a admin route here could potentially be used for admin dashboard with / route */}
+        <Route path="/" element={<Admin />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route
