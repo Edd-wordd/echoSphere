@@ -124,7 +124,11 @@ export default function Dashboard() {
         setUser(null)
       }
     })
-    return () => unsubscribe()
+    return () => {
+      if (typeof unsubscribe === 'function') {
+        unsubscribe()
+      }
+    }
   }, [])
 
   const isMenuOpen = Boolean(anchorEl)

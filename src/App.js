@@ -53,8 +53,8 @@ function App() {
     //   <CssBaseline />
     <Router>
       <Routes>
-        {/* May need to add a admin route here could potentially be used for admin dashboard with / route */}
-        <Route path="/" element={<Admin />} />
+        {/* Default to sign-in; admin now has its own route */}
+        <Route path="/" element={<SignIn />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route
@@ -65,6 +65,7 @@ function App() {
             </EmailVerificationHandler>
           }
         />
+        <Route path="/admin" element={<Admin />} />
         <Route path="/hadicapping" element={<HadiCapping />} /> {/* Add the HadiCapping route */}
         {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
