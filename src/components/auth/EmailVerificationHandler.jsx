@@ -27,6 +27,7 @@ const EmailVerificationHandler = ({ children }) => {
             lastName,
             email: user.email,
             createdAt: new Date().toISOString(),
+
             userRole: 'user',
             lastLogin: new Date().toISOString(),
             record: {
@@ -57,7 +58,7 @@ const EmailVerificationHandler = ({ children }) => {
   }
 
   if (!user) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/signin" replace />
   }
 
   return children

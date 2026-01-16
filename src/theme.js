@@ -1,92 +1,41 @@
-// // src/theme.js
+// // theme.js
 // import { createTheme } from '@mui/material/styles'
 //
-// const theme = createTheme({
+// const darkTheme = createTheme({
 //   palette: {
+//     mode: 'dark',
 //     primary: {
-//       main: '#001F3F', // Dark Blue
+//       main: '#90caf9',
 //     },
 //     secondary: {
-//       main: '#007BFF', // Bright Blue
+//       main: '#f48fb1',
 //     },
 //     background: {
-//       default: '#0B0C10', // Dark Background
-//       paper: '#1F2833', // Slightly lighter for paper elements
+//       default: '#121212',
+//       paper: '#1d1d1d',
 //     },
 //     text: {
-//       primary: '#C5C6C7', // Light Grey
-//       secondary: '#66FCF1', // Cyan
-//     },
-//     error: {
-//       main: '#FF6F61', // Coral Red
-//     },
-//     warning: {
-//       main: '#FF9800', // Orange
-//     },
-//     info: {
-//       main: '#29B6F6', // Light Blue
-//     },
-//     success: {
-//       main: '#4CAF50', // Green
+//       primary: '#ffffff',
+//       secondary: '#b0bec5',
 //     },
 //   },
 //   typography: {
-//     fontFamily: 'Roboto, sans-serif',
-//     h1: {
-//       color: '#66FCF1', // Cyan
+//     h4: {
+//       color: '#ffffff',
 //     },
-//     h2: {
-//       color: '#66FCF1', // Cyan
-//     },
-//     h3: {
-//       color: '#C5C6C7', // Light Grey
+//     h5: {
+//       color: '#ffffff',
 //     },
 //     body1: {
-//       color: '#C5C6C7', // Light Grey
+//       color: '#b0bec5',
 //     },
 //     body2: {
-//       color: '#66FCF1', // Cyan
+//       color: '#90caf9',
 //     },
-//   },
-//   components: {
-//     MuiAppBar: {
-//       styleOverrides: {
-//         root: {
-//           backgroundColor: '#001F3F', // Dark Blue background
-//         },
-//       },
-//     },
-//     MuiDrawer: {
-//       styleOverrides: {
-//         paper: {
-//           backgroundColor: '#1F2833', // Dark Paper Background
-//           color: '#C5C6C7', // Light Grey text
-//         },
-//       },
-//     },
-//     MuiButton: {
-//       styleOverrides: {
-//         root: {
-//           borderRadius: '8px', // Slightly rounded corners
-//           textTransform: 'none', // Disable uppercase transform
-//         },
-//         containedPrimary: {
-//           backgroundColor: '#007BFF', // Bright Blue
-//           color: '#0B0C10', // Dark Background text
-//           '&:hover': {
-//             backgroundColor: '#0056b3', // Darker Blue on hover
-//           },
-//         },
-//         containedSecondary: {
-//           backgroundColor: '#66FCF1', // Cyan
-//           color: '#0B0C10', // Dark Background text
-//           '&:hover': {
-//             backgroundColor: '#45A29E', // Darker Cyan on hover
-//           },
-//         },
-//       },
+//     caption: {
+//       color: '#f48fb1',
 //     },
 //   },
 // })
 //
-// export default theme
+// export default darkTheme

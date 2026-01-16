@@ -4,14 +4,15 @@ import { useNavigate } from 'react-router-dom'
 import { auth } from '../../firebase/firebase'
 import {
   GoogleAuthProvider,
-  GithubAuthProvider,
+  // GithubAuthProvider,
   FacebookAuthProvider,
   signInWithPopup,
   createUserWithEmailAndPassword,
   updateProfile,
   sendEmailVerification,
+  signOut,
 } from 'firebase/auth'
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { collection, query, where, getDocs, doc, setDoc, serverTimestamp } from 'firebase/firestore'
 import {
   Grid,
   Box,
@@ -29,11 +30,13 @@ import {
 import {
   LockOutlined as LockOutlinedIcon,
   Google as GoogleIcon,
-  GitHub as GitHubIcon,
+  // GitHub as GitHubIcon,
   Facebook as FacebookIcon,
 } from '@mui/icons-material'
 import Footer from '../layout/Footer'
 import { firestore } from '../../firebase/firebase'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { IconButton, InputAdornment } from '@mui/material'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -49,6 +52,7 @@ export default function SignUp() {
   const [errorMessage, setErrorMessage] = useState('')
   const [isSocialMediaSigningIn, setIsSocialMediaSigningIn] = useState(false)
   const [emailSentAlert, setEmailSentAlert] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     const { firstName, lastName, email, password } = userCredentials
@@ -82,20 +86,20 @@ export default function SignUp() {
     }
   }
 
-  const handleGitHubSignIn = async (e) => {
-    e.preventDefault()
-    setIsSocialMediaSigningIn(true)
-    const provider = new GithubAuthProvider()
-    try {
-      const result = await signInWithPopup(auth, provider)
-      console.log('GitHub sign-in result:', result)
-      navigate('/dashboard')
-    } catch (error) {
-      console.error('Error during sign-in with popup:', error)
-      setErrorMessage('Error during sign-in. Please try again.')
-      setIsSocialMediaSigningIn(false)
-    }
-  }
+  // const handleGitHubSignIn = async (e) => {
+  //   e.preventDefault()
+  //   setIsSocialMediaSigningIn(true)
+  //   const provider = new GithubAuthProvider()
+  //   try {
+  //     const result = await signInWithPopup(auth, provider)
+  //     console.log('GitHub sign-in result:', result)
+  //     navigate('/dashboard')
+  //   } catch (error) {
+  //     console.error('Error during sign-in with popup:', error)
+  //     setErrorMessage('Error during sign-in. Please try again.')
+  //     setIsSocialMediaSigningIn(false)
+  //   }
+  // }
 
   const handleFacebookSignIn = async (e) => {
     e.preventDefault()
@@ -133,6 +137,16 @@ export default function SignUp() {
           [name]: nameRegex.test(value) ? '' : 'Invalid name format',
         }))
       }
+
+      if (name === 'password') {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          password: passwordRegex.test(value)
+            ? ''
+            : 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+        }))
+      }
       return updatedCredentials
     })
   }
@@ -150,6 +164,7 @@ export default function SignUp() {
     }
 
     try {
+      // First check if email exists in Firestore
       const q = query(collection(firestore, 'users'), where('email', '==', email))
       const querySnapshot = await getDocs(q)
       if (!querySnapshot.empty) {
@@ -158,28 +173,52 @@ export default function SignUp() {
         return
       }
 
+      // Create authentication user
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
 
+      // Update user profile
       await updateProfile(user, { displayName: `${firstName} ${lastName}` })
 
+      // Save user data to Firestore
+      try {
+        await setDoc(doc(firestore, 'users', user.uid), {
+          firstName,
+          lastName,
+          email,
+          createdAt: serverTimestamp(),
+          uid: user.uid,
+        })
+      } catch (firestoreError) {
+        console.error('Error saving to Firestore:', firestoreError)
+        // If Firestore save fails, delete the auth user to maintain consistency
+        await user.delete()
+        throw new Error('Failed to save user data')
+      }
+
+      // Send verification email
       await sendEmailVerification(user)
 
       setUserCredentials({ firstName: '', lastName: '', email: '', password: '' })
-
       setEmailSentAlert(true)
+
+      // Sign out the user after sending the email verification
+      await signOut(auth)
 
       setTimeout(() => {
         setEmailSentAlert(false)
-        navigate('/', { state: { emailSent: true } })
+        navigate('/signin') // Redirect to the sign-in page
       }, 3000)
     } catch (error) {
+      console.error('Signup error:', error)
       if (error.code === 'auth/email-already-in-use') {
         setErrorMessage('Email already in use.')
       } else if (error.code === 'auth/invalid-email') {
         setErrorMessage('Invalid email address.')
       } else if (error.code === 'auth/weak-password') {
         setErrorMessage('Password is too weak. Need at least 6 characters.')
+      } else if (error.message === 'Failed to save user data') {
+        setErrorMessage('Error creating account. Please try again.')
       } else {
         setErrorMessage('Error signing up. Please try again.')
       }
@@ -261,13 +300,26 @@ export default function SignUp() {
                 fullWidth
                 name="password"
                 label="Password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 autoComplete="new-password"
                 onChange={handleChange}
                 helperText={errors.password}
                 error={!!errors.password}
                 value={userCredentials.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
           </Grid>
@@ -296,14 +348,14 @@ export default function SignUp() {
             >
               Sign in with Google
             </Button>
-            <Button
+            {/* <Button
               fullWidth
               variant="outlined"
               startIcon={<GitHubIcon />}
               onClick={handleGitHubSignIn}
             >
               Sign in with GitHub
-            </Button>
+            </Button> */}
             <Button
               fullWidth
               variant="outlined"
@@ -315,7 +367,7 @@ export default function SignUp() {
           </Box>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/" variant="body2">
+              <Link href="/signin" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
