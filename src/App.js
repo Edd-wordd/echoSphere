@@ -8,6 +8,8 @@ import Dashboard from './components/pages/Dashboard'
 import EmailVerificationHandler from './components/auth/EmailVerificationHandler'
 import HadiCapping from './components/gameData/HandiCapping' // Assuming HadiCapping is a page component
 import Admin from './components/pages/Admin'
+import ForgotPassword from './components/pages/ForgotPassword'
+import Access from './components/pages/Access'
 
 // const darkTheme = createTheme({
 //   palette: {
@@ -53,10 +55,11 @@ function App() {
     //   <CssBaseline />
     <Router>
       <Routes>
-        {/* Default to sign-in; admin now has its own route */}
-        <Route path="/" element={<SignIn />} />
+        {/* May need to add a admin route here could potentially be used for admin dashboard with / route */}
+        <Route path="/" element={<Access />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route
           path="/dashboard"
           element={

@@ -32,19 +32,17 @@ describe('Route Tests', () => {
     authMock = getAuth()
   })
 
-  test('renders SignIn page when navigating to / route', async () => {
+  test('renders Access page when navigating to / route', async () => {
     window.history.pushState({}, '', '/')
 
     render(<App />)
 
-    const loginHeading = await screen.findByRole('heading', { name: /Sign in/i })
-    expect(loginHeading).toBeInTheDocument()
+    const accessHeading = await screen.findByRole('heading', { name: /Enter Access Number/i })
+    expect(accessHeading).toBeInTheDocument()
 
-    const emailField = await screen.findByLabelText(/Email Address/i)
-    expect(emailField).toBeInTheDocument()
-
-    const passwordField = await screen.findByLabelText(/Password/i)
-    expect(passwordField).toBeInTheDocument()
+    // The Access page shows "Access Number" field and not email/password. So test for that.
+    const accessField = await screen.findByLabelText(/Access Number/i)
+    expect(accessField).toBeInTheDocument()
   })
 
   test('renders Dashboard page when navigating to /dashboard route', async () => {
