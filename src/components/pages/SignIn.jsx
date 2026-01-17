@@ -139,6 +139,8 @@ export default function SignIn() {
         setErrorMessage('No user found with this email.')
       } else if (error.code === 'auth/wrong-password') {
         setErrorMessage('Incorrect password.')
+      } else if (error.code === 'auth/invalid-credential') {
+        setErrorMessage('Invalid email or password.')
       } else {
         setErrorMessage('Error during sign-in. Please try again.')
       }
@@ -225,7 +227,7 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="/forgot-password" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>
