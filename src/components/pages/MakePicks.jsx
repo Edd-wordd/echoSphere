@@ -208,8 +208,7 @@ const MakePicks = () => {
 
   const pickedCount = useMemo(() => Object.keys(picks).length, [picks])
   const hasUnsavedChanges = useMemo(
-    () =>
-      JSON.stringify(picks) !== JSON.stringify(savedPicks) || lockOfWeek !== savedLockOfWeek,
+    () => JSON.stringify(picks) !== JSON.stringify(savedPicks) || lockOfWeek !== savedLockOfWeek,
     [picks, savedPicks, lockOfWeek, savedLockOfWeek],
   )
 
@@ -315,7 +314,11 @@ const MakePicks = () => {
         justifyContent="space-between"
         mb={3}
       >
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ width: { xs: '100%', sm: 'auto' } }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          sx={{ width: { xs: '100%', sm: 'auto' } }}
+        >
           <WeekSelector value={selectedWeek} onChange={setSelectedWeek} />
           <FormControlLabel
             control={
@@ -348,33 +351,33 @@ const MakePicks = () => {
       )}
 
       <Grid container spacing={2}>
-        {loading
-          ? Array.from({ length: 3 }).map((_, i) => (
-              <Grid item xs={12} sm={6} key={`sk-${i}`}>
-                <Skeleton variant="rectangular" height={150} />
-              </Grid>
-            ))
-          : filteredGames.length === 0
-          ? (
-            <Grid item xs={12}>
-              <Typography variant="body1" color="text.secondary" align="center">
-                No games found for this week.
-              </Typography>
+        {loading ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <Grid item xs={12} sm={6} key={`sk-${i}`}>
+              <Skeleton variant="rectangular" height={150} />
             </Grid>
-            )
-          : filteredGames.map((game) => (
-              <Grid item xs={12} sm={6} key={game.id}>
-                <MatchupCard
-                  game={game}
-                  pick={picks[game.id]}
-                  savedPick={savedPicks[game.id]}
-                  onPick={(side) => handlePick(game.id, side)}
-                  lockOfWeek={lockOfWeek}
-                  onToggleLock={handleToggleLock}
-                  isLocked={isLocked}
-                />
-              </Grid>
-            ))}
+          ))
+        ) : filteredGames.length === 0 ? (
+          <Grid item xs={12}>
+            <Typography variant="body1" color="text.secondary" align="center">
+              No games found for this week.
+            </Typography>
+          </Grid>
+        ) : (
+          filteredGames.map((game) => (
+            <Grid item xs={12} sm={6} key={game.id}>
+              <MatchupCard
+                game={game}
+                pick={picks[game.id]}
+                savedPick={savedPicks[game.id]}
+                onPick={(side) => handlePick(game.id, side)}
+                lockOfWeek={lockOfWeek}
+                onToggleLock={handleToggleLock}
+                isLocked={isLocked}
+              />
+            </Grid>
+          ))
+        )}
       </Grid>
 
       <StickySaveBar

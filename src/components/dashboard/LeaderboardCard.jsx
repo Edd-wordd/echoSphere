@@ -1,5 +1,14 @@
 import React from 'react'
-import { Card, CardContent, Typography, List, ListItem, ListItemText, Chip, Stack } from '@mui/material'
+import {
+  Card,
+  CardContent,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Chip,
+  Stack,
+} from '@mui/material'
 
 const LeaderboardCard = ({ entries = [], currentUserId }) => {
   return (
