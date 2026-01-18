@@ -4,12 +4,12 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import DashboardIcon from '@mui/icons-material/Dashboard'
-import BarChartIcon from '@mui/icons-material/BarChart'
-import AssignmentIcon from '@mui/icons-material/Assignment'
 import SportsFootballIcon from '@mui/icons-material/SportsFootball'
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'
-import PeopleIcon from '@mui/icons-material/People'
+import RuleIcon from '@mui/icons-material/Rule'
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
+import SettingsIcon from '@mui/icons-material/Settings'
+import PeopleIcon from '@mui/icons-material/People'
+import EventAvailableIcon from '@mui/icons-material/EventAvailable'
 
 export function MainListItems({ onSelectItem }) {
   return (
@@ -20,63 +20,53 @@ export function MainListItems({ onSelectItem }) {
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
       </ListItemButton>
-      <ListItemButton onClick={() => onSelectItem('Users')}>
-        <ListItemIcon>
-          <PeopleIcon />
-        </ListItemIcon>
-        <ListItemText primary="Users" />
-      </ListItemButton>
-      <ListItemButton onClick={() => onSelectItem('MatchUps')}>
+      <ListItemButton onClick={() => onSelectItem('MakePicks')}>
         <ListItemIcon>
           <SportsFootballIcon />
         </ListItemIcon>
-        <ListItemText primary="Match Ups" />
+        <ListItemText primary="Make Picks" />
       </ListItemButton>
-      <ListItemButton onClick={() => onSelectItem('HadiCapping')}>
-        <ListItemIcon>
-          <BarChartIcon />
-        </ListItemIcon>
-        <ListItemText primary="HadiCapping" />
-      </ListItemButton>
-      <ListItemButton onClick={() => onSelectItem('Rules')}>
-        <ListItemIcon>
-          <AssignmentTurnedInIcon />
-        </ListItemIcon>
-        <ListItemText primary="Rules" />
-      </ListItemButton>
-      <ListItemButton onClick={() => onSelectItem('SuperBowl')}>
+      <ListItemButton onClick={() => onSelectItem('Leaderboard')}>
         <ListItemIcon>
           <EmojiEventsIcon />
         </ListItemIcon>
-        <ListItemText primary="SuperBowl" />
+        <ListItemText primary="Leaderboard" />
+      </ListItemButton>
+      <ListItemButton onClick={() => onSelectItem('Rules')}>
+        <ListItemIcon>
+          <RuleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Rules" />
+      </ListItemButton>
+      <ListItemButton onClick={() => onSelectItem('Settings')}>
+        <ListItemIcon>
+          <SettingsIcon />
+        </ListItemIcon>
+        <ListItemText primary="Settings" />
       </ListItemButton>
     </React.Fragment>
   )
 }
 
-export function SecondaryListItems({ onSelectItem }) {
+export function SecondaryListItems({ onSelectItem, isAdmin }) {
+  if (!isAdmin) return null
+
   return (
     <React.Fragment>
       <ListSubheader component="div" inset>
-        Saved reports
+        Admin
       </ListSubheader>
-      <ListItemButton onClick={() => onSelectItem('Current month')}>
+      <ListItemButton onClick={() => onSelectItem('ManageUsers')}>
         <ListItemIcon>
-          <AssignmentIcon />
+          <PeopleIcon />
         </ListItemIcon>
-        <ListItemText primary="Current month" />
+        <ListItemText primary="Manage Users" />
       </ListItemButton>
-      <ListItemButton onClick={() => onSelectItem('Last quarter')}>
+      <ListItemButton onClick={() => onSelectItem('ManageWeeks')}>
         <ListItemIcon>
-          <AssignmentIcon />
+          <EventAvailableIcon />
         </ListItemIcon>
-        <ListItemText primary="Last quarter" />
-      </ListItemButton>
-      <ListItemButton onClick={() => onSelectItem('Year-end sale')}>
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Year-end sale" />
+        <ListItemText primary="Manage Weeks" />
       </ListItemButton>
     </React.Fragment>
   )
