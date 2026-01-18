@@ -29,11 +29,9 @@ import { auth } from '../../firebase/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { MainListItems, SecondaryListItems } from '../layout/ListItems'
 import UsersDetails from '../users/UsersDetails'
-import MatchUps from '../gameData/MatchUps'
 import RulesData from '../gameData/RulesData'
-import HadiCapping from '../gameData/HandiCapping'
-import SuperBowl from '../gameData/SuperBowl'
 import UsersDashboard from '../users/UsersDashboard'
+import MakePicks from './MakePicks'
 
 const drawerWidth = 240
 
@@ -87,6 +85,7 @@ export default function Dashboard() {
   const [selectedComponent, setSelectedComponent] = React.useState('Dashboard')
   const navigate = useNavigate()
   const [user, setUser] = React.useState(null)
+  const [isAdmin, setIsAdmin] = React.useState(false)
 
   // Toggle the drawer
   const toggleDrawer = () => {
@@ -119,9 +118,11 @@ export default function Dashboard() {
       if (currentUser) {
         console.log('User logged in:', currentUser) // Debugging
         setUser(currentUser)
+        setIsAdmin(!!currentUser?.email?.includes('admin'))
       } else {
         console.log('No user is logged in') // Debugging
         setUser(null)
+        setIsAdmin(false)
       }
     })
     return () => {
@@ -174,19 +175,49 @@ export default function Dashboard() {
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
       case 'Dashboard':
-        return <UsersDashboard />
-      case 'Users':
-        return <UsersDetails />
-      case 'MatchUps':
-        return <MatchUps />
-      case 'HadiCapping':
-        return <HadiCapping />
+        return <UsersDashboard onManagePicks={() => setSelectedComponent('MakePicks')} />
+      case 'MakePicks':
+        return <MakePicks />
+      case 'Leaderboard':
+        return (
+          <Box>
+            <Typography variant="h5" gutterBottom>
+              Leaderboard
+            </Typography>
+            {/* Placeholder leaderboard page content */}
+            <Typography variant="body1" color="text.secondary">
+              View top records and points here.
+            </Typography>
+          </Box>
+        )
       case 'Rules':
         return <RulesData />
-      case 'SuperBowl':
-        return <SuperBowl />
+      case 'Settings':
+        return (
+          <Box>
+            <Typography variant="h5" gutterBottom>
+              Settings
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Manage your account preferences and notifications.
+            </Typography>
+          </Box>
+        )
+      case 'ManageUsers':
+        return <UsersDetails />
+      case 'ManageWeeks':
+        return (
+          <Box>
+            <Typography variant="h5" gutterBottom>
+              Manage Weeks
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Admin tools to manage weeks and lock times.
+            </Typography>
+          </Box>
+        )
       default:
-        return <div>Dashboard Content</div>
+        return <UsersDashboard onManagePicks={() => setSelectedComponent('MakePicks')} />
     }
   }
 
@@ -248,7 +279,7 @@ export default function Dashboard() {
         <List component="nav">
           <MainListItems onSelectItem={setSelectedComponent} />
           <Divider sx={{ my: 1 }} />
-          <SecondaryListItems onSelectItem={setSelectedComponent} />
+          <SecondaryListItems onSelectItem={setSelectedComponent} isAdmin={isAdmin} />
         </List>
       </Drawer>
       <Box
