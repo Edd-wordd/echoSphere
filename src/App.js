@@ -10,6 +10,7 @@ import HadiCapping from './components/gameData/HandiCapping' // Assuming HadiCap
 import Admin from './components/pages/Admin'
 import ForgotPassword from './components/pages/ForgotPassword'
 import Access from './components/pages/Access'
+import SuperBowlSquares from './components/pages/SuperBowlSquares'
 
 // const darkTheme = createTheme({
 //   palette: {
@@ -68,6 +69,7 @@ function App() {
             </EmailVerificationHandler>
           }
         />
+        <Route path="/superbowl" element={<SuperBowlSquares />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/hadicapping" element={<HadiCapping />} /> {/* Add the HadiCapping route */}
         {/* <Route path="*" element={<NotFound />} /> */}

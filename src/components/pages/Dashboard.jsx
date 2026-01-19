@@ -32,6 +32,7 @@ import UsersDetails from '../users/UsersDetails'
 import RulesData from '../gameData/RulesData'
 import UsersDashboard from '../users/UsersDashboard'
 import MakePicks from './MakePicks'
+import SuperBowlSquares from './SuperBowlSquares'
 
 const drawerWidth = 240
 
@@ -175,7 +176,12 @@ export default function Dashboard() {
   const renderSelectedComponent = () => {
     switch (selectedComponent) {
       case 'Dashboard':
-        return <UsersDashboard onManagePicks={() => setSelectedComponent('MakePicks')} />
+        return (
+          <UsersDashboard
+            onManagePicks={() => setSelectedComponent('MakePicks')}
+            onViewLeaderboard={() => setSelectedComponent('Leaderboard')}
+          />
+        )
       case 'MakePicks':
         return <MakePicks />
       case 'Leaderboard':
@@ -192,6 +198,8 @@ export default function Dashboard() {
         )
       case 'Rules':
         return <RulesData />
+      case 'SuperBowl':
+        return <SuperBowlSquares />
       case 'Settings':
         return (
           <Box>

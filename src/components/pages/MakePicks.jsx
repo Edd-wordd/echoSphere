@@ -20,22 +20,50 @@ import {
   ToggleButtonGroup,
   Typography,
   Skeleton,
+  TextField,
 } from '@mui/material'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 
 // Mock data / services (replace with Firebase services when ready)
 const mockGames = [
-  { id: 'game1', away: 'Cowboys', home: 'Eagles', kickoff: 'Sun 3:25 PM' },
-  { id: 'game2', away: 'Bills', home: 'Chiefs', kickoff: 'Sun 7:20 PM' },
-  { id: 'game3', away: 'Packers', home: 'Bears', kickoff: 'Mon 7:15 PM' },
+  {
+    id: 'game1',
+    away: 'Cowboys',
+    home: 'Eagles',
+    kickoff: 'Sun 3:25 PM',
+    kickoffAt: '2024-10-06T20:25:00Z',
+  },
+  {
+    id: 'game2',
+    away: 'Bills',
+    home: 'Chiefs',
+    kickoff: 'Sun 7:20 PM',
+    kickoffAt: '2024-10-06T23:20:00Z',
+  },
+  {
+    id: 'game3',
+    away: 'Packers',
+    home: 'Bears',
+    kickoff: 'Mon 7:15 PM',
+    kickoffAt: '2024-10-07T23:15:00Z',
+  },
 ]
 
 const getWeekGames = async (week) =>
   Promise.resolve(mockGames.map((g) => ({ ...g, id: `${g.id}-${week}` })))
 const getUserPicks = async () => Promise.resolve({ picks: {}, lockOfWeek: null })
-const saveUserPicks = async (_uid, _week, picks, lockOfWeek) =>
+const saveUserPicks = async (_uid, _week, picks, lockOfWeek, tieBreaker) =>
   new Promise((resolve) =>
-    setTimeout(() => resolve({ picks, lockOfWeek, updatedAt: new Date().toISOString() }), 500),
+    setTimeout(
+      () =>
+        resolve({
+          picks,
+          lockOfWeek,
+          tieBreaker,
+          updatedAt: new Date().toISOString(),
+        }),
+      500,
+    ),
   )
 
 const WeekSelector = ({ value, onChange, max = 18 }) => (
@@ -146,6 +174,7 @@ const StickySaveBar = ({
   isLocked,
   onSave,
   onClear,
+  extraDisabled = false,
 }) => (
   <Box
     component={Card}
@@ -178,7 +207,11 @@ const StickySaveBar = ({
         <Button variant="outlined" onClick={onClear} disabled={isSaving || isLocked}>
           Clear Week
         </Button>
-        <Button variant="contained" onClick={onSave} disabled={isSaving || isLocked}>
+        <Button
+          variant="contained"
+          onClick={onSave}
+          disabled={isSaving || isLocked || extraDisabled}
+        >
           {isSaving ? 'Saving...' : 'Save Picks'}
         </Button>
       </Stack>
@@ -190,6 +223,15 @@ const StickySaveBar = ({
     )}
   </Box>
 )
+
+const validateTiebreaker = (gameId, total) => {
+  if (!gameId) return 'Select a tie-breaker game'
+  if (total === '') return 'Enter total points'
+  if (!/^-?\d+$/.test(total)) return 'Total must be an integer'
+  const num = Number(total)
+  if (num < 0 || num > 200) return 'Total must be between 0 and 200'
+  return ''
+}
 
 const MakePicks = () => {
   const [selectedWeek, setSelectedWeek] = useState(1)
@@ -203,13 +245,28 @@ const MakePicks = () => {
   const [isSaving, setIsSaving] = useState(false)
   const [showOnlyUnpicked, setShowOnlyUnpicked] = useState(false)
   const [highlightDiff, setHighlightDiff] = useState(false)
+  const [tiebreakerGameId, setTiebreakerGameId] = useState('')
+  const [tiebreakerTotal, setTiebreakerTotal] = useState('')
+  const [savedTiebreaker, setSavedTiebreaker] = useState({ gameId: '', total: '' })
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [error, setError] = useState('')
 
   const pickedCount = useMemo(() => Object.keys(picks).length, [picks])
   const hasUnsavedChanges = useMemo(
-    () => JSON.stringify(picks) !== JSON.stringify(savedPicks) || lockOfWeek !== savedLockOfWeek,
-    [picks, savedPicks, lockOfWeek, savedLockOfWeek],
+    () =>
+      JSON.stringify(picks) !== JSON.stringify(savedPicks) ||
+      lockOfWeek !== savedLockOfWeek ||
+      tiebreakerGameId !== savedTiebreaker.gameId ||
+      tiebreakerTotal !== savedTiebreaker.total,
+    [
+      picks,
+      savedPicks,
+      lockOfWeek,
+      savedLockOfWeek,
+      tiebreakerGameId,
+      tiebreakerTotal,
+      savedTiebreaker,
+    ],
   )
 
   useEffect(() => {
@@ -224,6 +281,22 @@ const MakePicks = () => {
         setSavedPicks(userPicks.picks || {})
         setLockOfWeek(userPicks.lockOfWeek || null)
         setSavedLockOfWeek(userPicks.lockOfWeek || null)
+        // tie-breaker load
+        const chosenTieGame =
+          userPicks.tieBreaker?.gameId ||
+          (weekGames.length
+            ? weekGames
+                .slice()
+                .sort(
+                  (a, b) =>
+                    new Date(b.kickoffAt || 0).getTime() - new Date(a.kickoffAt || 0).getTime(),
+                )[0].id
+            : '')
+        const tieTotalValue =
+          userPicks.tieBreaker?.totalPoints != null ? String(userPicks.tieBreaker.totalPoints) : ''
+        setTiebreakerGameId(chosenTieGame)
+        setTiebreakerTotal(tieTotalValue)
+        setSavedTiebreaker({ gameId: chosenTieGame, total: tieTotalValue })
         setIsLocked(false)
       } catch (err) {
         console.error(err)
@@ -234,6 +307,9 @@ const MakePicks = () => {
     }
     load()
   }, [selectedWeek])
+
+  const tieValidationError = validateTiebreaker(tiebreakerGameId, tiebreakerTotal)
+  const saveDisabled = isSaving || isLocked || !!tieValidationError
 
   const handlePick = (gameId, side) => {
     if (isLocked) return
@@ -261,6 +337,7 @@ const MakePicks = () => {
 
   const handleSave = async () => {
     if (isLocked) return
+    if (tieValidationError) return
     const missing = games.length - Object.keys(picks).length
     if (missing > 0) {
       const proceed = window.confirm(
@@ -270,9 +347,13 @@ const MakePicks = () => {
     }
     try {
       setIsSaving(true)
-      await saveUserPicks('mock-user', selectedWeek, picks, lockOfWeek)
+      await saveUserPicks('mock-user', selectedWeek, picks, lockOfWeek, {
+        gameId: tiebreakerGameId,
+        totalPoints: Number(tiebreakerTotal),
+      })
       setSavedPicks(picks)
       setSavedLockOfWeek(lockOfWeek)
+      setSavedTiebreaker({ gameId: tiebreakerGameId, total: tiebreakerTotal })
       setSnackbarOpen(true)
     } catch (err) {
       console.error(err)
@@ -344,6 +425,53 @@ const MakePicks = () => {
         </Button>
       </Stack>
 
+      {/* Tie-breaker card */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Stack spacing={1} mb={1}>
+            <Typography variant="h6">Weekly Tie-Breaker</Typography>
+            <Typography variant="body2" color="text.secondary">
+              Used only if there’s a tie on the leaderboard this week.
+            </Typography>
+          </Stack>
+          <Stack spacing={1} mb={2}>
+            <Typography variant="body2" fontWeight={600}>
+              Tie-breaker matchup
+            </Typography>
+            <Typography variant="body1">
+              {games.find((g) => g.id === tiebreakerGameId)?.away} @{' '}
+              {games.find((g) => g.id === tiebreakerGameId)?.home}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {games.find((g) => g.id === tiebreakerGameId)?.kickoff || 'Kickoff TBD'}
+            </Typography>
+          </Stack>
+          <Stack spacing={1} mb={1}>
+            <TextField
+              size="small"
+              label="Total Points (Both Teams)"
+              placeholder="e.g., 47"
+              type="number"
+              inputProps={{ min: 0, max: 200 }}
+              value={tiebreakerTotal}
+              disabled={isLocked}
+              onChange={(e) => {
+                setTiebreakerTotal(e.target.value)
+              }}
+              error={!!tieValidationError}
+              helperText={
+                isLocked
+                  ? 'Locked'
+                  : tieValidationError || 'Enter combined score for the tie-breaker game'
+              }
+            />
+          </Stack>
+          <Typography variant="caption" color="text.secondary">
+            Closest total wins the tie-breaker (difference from actual total).
+          </Typography>
+        </CardContent>
+      </Card>
+
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
@@ -388,6 +516,7 @@ const MakePicks = () => {
         isLocked={isLocked}
         onSave={handleSave}
         onClear={handleClear}
+        extraDisabled={saveDisabled}
       />
 
       <Snackbar

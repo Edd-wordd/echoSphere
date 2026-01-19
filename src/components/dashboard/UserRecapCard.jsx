@@ -12,7 +12,7 @@ const StatRow = ({ label, value }) => (
   </Stack>
 )
 
-const UserRecapCard = ({ lastWeekRecord, seasonRecord, currentRank }) => (
+const UserRecapCard = ({ lastWeekRecord, seasonRecord, currentRank, streak }) => (
   <Card>
     <CardContent>
       <Typography variant="h6" gutterBottom>
@@ -21,6 +21,11 @@ const UserRecapCard = ({ lastWeekRecord, seasonRecord, currentRank }) => (
       <StatRow label="Last week" value={lastWeekRecord} />
       <StatRow label="Season" value={seasonRecord} />
       <StatRow label="Current rank" value={currentRank} />
+      {streak && (
+        <Typography variant="body2" mt={1}>
+          {streak.type === 'hot' ? '🔥' : '❄️'} {streak.label}
+        </Typography>
+      )}
     </CardContent>
   </Card>
 )
