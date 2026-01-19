@@ -112,8 +112,7 @@ const ThisWeekCard = ({
       return {
         matchup: tieBreaker.matchup || (g ? `${g.awayTeam.name} @ ${g.homeTeam.name}` : ''),
         kickoff:
-          tieBreaker.kickoff ||
-          (g && g.kickoffAt ? new Date(g.kickoffAt).toLocaleString() : ''),
+          tieBreaker.kickoff || (g && g.kickoffAt ? new Date(g.kickoffAt).toLocaleString() : ''),
         totalPoints: tieBreaker.totalPoints ?? null,
       }
     }

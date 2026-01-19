@@ -92,8 +92,7 @@ const QuarterWinners = ({ game, quarterScores, claims }) => {
               )
             }
             const win = getWinningSquare(digits, entry.score)
-            const claim =
-              win && claims.find((c) => c.row === win.row && c.col === win.col)
+            const claim = win && claims.find((c) => c.row === win.row && c.col === win.col)
             return (
               <Stack
                 key={entry.label}
@@ -161,16 +160,12 @@ const SquaresBoard = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          bgcolor: claim
-            ? ownedByUser
-              ? 'primary.light'
-              : 'action.hover'
-            : 'background.paper',
+          bgcolor: claim ? (ownedByUser ? 'primary.light' : 'action.hover') : 'background.paper',
           cursor: disabled
             ? 'not-allowed'
             : claim && claim.userId !== currentUser.id
-            ? 'not-allowed'
-            : 'pointer',
+              ? 'not-allowed'
+              : 'pointer',
           fontSize: 12,
           textAlign: 'center',
           px: 0.5,
@@ -331,8 +326,8 @@ const SuperBowlSquares = () => {
       </Stack>
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        Claim up to {MAX_SQUARES_PER_USER} squares. Board locks at the first kickoff or when an admin
-        locks it. Winners are based on the last digit of each team’s score at the end of each
+        Claim up to {MAX_SQUARES_PER_USER} squares. Board locks at the first kickoff or when an
+        admin locks it. Winners are based on the last digit of each team’s score at the end of each
         quarter.
       </Alert>
 
@@ -381,11 +376,7 @@ const SuperBowlSquares = () => {
                   Admin Controls
                 </Typography>
                 <Stack spacing={2}>
-                  <Button
-                    variant="contained"
-                    onClick={handleLockBoard}
-                    disabled={isLocked}
-                  >
+                  <Button variant="contained" onClick={handleLockBoard} disabled={isLocked}>
                     Lock Board &amp; Generate Digits
                   </Button>
                   <Divider />

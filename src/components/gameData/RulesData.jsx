@@ -38,7 +38,7 @@ const tiebreakers = [
 
 const fairPlay = [
   'No changing picks after lock.',
-  "Don’t share others’ picks before lock.",
+  'Don’t share others’ picks before lock.',
   'Keep it friendly—this is for fun.',
 ]
 

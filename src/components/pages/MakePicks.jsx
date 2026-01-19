@@ -258,7 +258,15 @@ const MakePicks = () => {
       lockOfWeek !== savedLockOfWeek ||
       tiebreakerGameId !== savedTiebreaker.gameId ||
       tiebreakerTotal !== savedTiebreaker.total,
-    [picks, savedPicks, lockOfWeek, savedLockOfWeek, tiebreakerGameId, tiebreakerTotal, savedTiebreaker],
+    [
+      picks,
+      savedPicks,
+      lockOfWeek,
+      savedLockOfWeek,
+      tiebreakerGameId,
+      tiebreakerTotal,
+      savedTiebreaker,
+    ],
   )
 
   useEffect(() => {
@@ -281,14 +289,11 @@ const MakePicks = () => {
                 .slice()
                 .sort(
                   (a, b) =>
-                    new Date(b.kickoffAt || 0).getTime() -
-                    new Date(a.kickoffAt || 0).getTime(),
+                    new Date(b.kickoffAt || 0).getTime() - new Date(a.kickoffAt || 0).getTime(),
                 )[0].id
             : '')
         const tieTotalValue =
-          userPicks.tieBreaker?.totalPoints != null
-            ? String(userPicks.tieBreaker.totalPoints)
-            : ''
+          userPicks.tieBreaker?.totalPoints != null ? String(userPicks.tieBreaker.totalPoints) : ''
         setTiebreakerGameId(chosenTieGame)
         setTiebreakerTotal(tieTotalValue)
         setSavedTiebreaker({ gameId: chosenTieGame, total: tieTotalValue })
