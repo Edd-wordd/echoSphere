@@ -38,6 +38,12 @@ export function MainListItems({ onSelectItem }) {
         </ListItemIcon>
         <ListItemText primary="Rules" />
       </ListItemButton>
+      <ListItemButton onClick={() => onSelectItem('SuperBowl')}>
+        <ListItemIcon>
+          <EmojiEventsIcon />
+        </ListItemIcon>
+        <ListItemText primary="SuperBowl" />
+      </ListItemButton>
       <ListItemButton onClick={() => onSelectItem('Settings')}>
         <ListItemIcon>
           <SettingsIcon />

@@ -1,99 +1,182 @@
-import * as React from 'react'
+import React from 'react'
 import {
   Container,
-  Grid,
-  Paper,
   Typography,
   Box,
+  Card,
+  CardContent,
+  Stack,
   Divider,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
+  Alert,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Chip,
+  Link,
 } from '@mui/material'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import WarningIcon from '@mui/icons-material/Warning'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
-const rulesData = [
+const coreRules = [
+  'Pick the winner for each matchup every week.',
+  'Picks lock at the first kickoff of the week.',
+  'You can edit picks until the lock time.',
+  'If you miss the deadline: picks count as “no pick” (0 points).',
+]
+
+const scoringRules = [
+  '1 point per correct pick (MVP).',
+  'No penalty for incorrect picks (0 points).',
+  'Weekly total = number of correct picks.',
+  'Season total = sum of weekly totals.',
+]
+
+const tiebreakers = [
+  'First: most correct picks this season.',
+  'Second: best record last week.',
+  'Final: coin flip / admin decides.',
+]
+
+const fairPlay = [
+  'No changing picks after lock.',
+  "Don’t share others’ picks before lock.",
+  'Keep it friendly—this is for fun.',
+]
+
+const faqItems = [
   {
-    category: 'General Rules',
-    items: [
-      'Respect all participants.',
-      'No offensive language.',
-      'Follow the instructions given by the moderator.',
-    ],
+    q: 'When do picks lock?',
+    a: 'At the first kickoff of the week. Make sure to save before then.',
   },
   {
-    category: 'Game Rules',
-    items: [
-      'No cheating or exploiting game bugs.',
-      'Play fair and have fun.',
-      'Report any suspicious activity.',
-    ],
+    q: 'Can I edit my picks after submitting?',
+    a: 'Yes, until lock time. After lock, picks are frozen.',
   },
   {
-    category: 'Forum Rules',
-    items: ['No spamming.', 'Stay on topic.', 'Use appropriate language.'],
+    q: 'What happens if I forget to submit picks?',
+    a: 'They count as “no pick” (0 points) for that game.',
   },
   {
-    category: 'Privacy Rules',
-    items: [
-      'Do not share personal information.',
-      'Respect the privacy of others.',
-      'Follow data protection guidelines.',
-    ],
+    q: 'How is the leaderboard calculated?',
+    a: 'Season points = sum of weekly correct picks. 1 point per correct pick.',
+  },
+  {
+    q: 'Why do I see “Locked” on my dashboard?',
+    a: 'The week has started and picks are frozen until next week.',
+  },
+  {
+    q: 'How do I invite family members?',
+    a: 'Ask the admin to add them for now.',
   },
 ]
 
-export default function Rules() {
-  return (
-    <Container>
-      <Typography variant="h4" gutterBottom align="center" sx={{ mt: 4 }}>
-        Community Rules
+const SectionCard = ({ title, children, id }) => (
+  <Card id={id} sx={{ mb: 3 }}>
+    <CardContent>
+      <Typography variant="h6" gutterBottom>
+        {title}
       </Typography>
-      <Divider sx={{ mb: 4 }} />
-      <Grid container spacing={4}>
-        {rulesData.map((ruleCategory, index) => (
-          <Grid item xs={12} md={6} key={index}>
-            <Paper sx={{ p: 3, height: '100%' }}>
-              <Typography variant="h5" gutterBottom>
-                {ruleCategory.category}
-              </Typography>
-              <List>
-                {ruleCategory.items.map((rule, idx) => (
-                  <ListItem key={idx}>
-                    <ListItemIcon>
-                      {rule.includes('No') ? (
-                        <WarningIcon color="error" />
-                      ) : (
-                        <CheckCircleIcon color="primary" />
-                      )}
-                    </ListItemIcon>
-                    <ListItemText primary={rule} />
-                  </ListItem>
-                ))}
-              </List>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h6" gutterBottom>
-          Additional Information
+      <Stack spacing={1}>{children}</Stack>
+    </CardContent>
+  </Card>
+)
+
+export default function RulesData() {
+  return (
+    <Container maxWidth="md" sx={{ py: 4 }}>
+      <Stack spacing={1} mb={2}>
+        <Typography variant="h4">Family NFL Picks</Typography>
+        <Typography variant="subtitle1" color="text.secondary">
+          Rules &amp; FAQ
         </Typography>
-        <Typography variant="body1" paragraph>
-          Our community values respect and courtesy. Please ensure that you follow all the rules
-          outlined above to maintain a positive and welcoming environment for all participants.
-        </Typography>
-        <Typography variant="body1" paragraph>
-          If you have any questions or concerns about these rules, feel free to reach out to the
-          moderators. They are here to help and ensure that everyone has a great experience.
-        </Typography>
-        <Typography variant="body1" paragraph>
-          Thank you for being a part of our community and for your cooperation in following these
-          guidelines. Together, we can create a safe and enjoyable space for everyone.
-        </Typography>
+      </Stack>
+
+      <Alert severity="info" sx={{ mb: 3 }}>
+        Make your picks before kickoff. Picks lock at the first game of the week.
+      </Alert>
+
+      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+        <Link href="#core-rules" underline="hover" variant="body2">
+          Core Rules
+        </Link>
+        <Link href="#scoring" underline="hover" variant="body2">
+          Scoring
+        </Link>
+        <Link href="#tiebreakers" underline="hover" variant="body2">
+          Tiebreakers
+        </Link>
+        <Link href="#fair-play" underline="hover" variant="body2">
+          Fair Play
+        </Link>
+        <Link href="#faq" underline="hover" variant="body2">
+          FAQ
+        </Link>
       </Box>
+
+      <SectionCard title="Core Rules" id="core-rules">
+        <Stack component="ul" spacing={0.5} sx={{ pl: 2, m: 0 }}>
+          {coreRules.map((item) => (
+            <Typography key={item} component="li" variant="body2">
+              {item}
+            </Typography>
+          ))}
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title="Scoring" id="scoring">
+        <Stack component="ul" spacing={0.5} sx={{ pl: 2, m: 0 }}>
+          {scoringRules.map((item) => (
+            <Typography key={item} component="li" variant="body2">
+              {item}
+            </Typography>
+          ))}
+        </Stack>
+        <Divider sx={{ my: 1.5 }} />
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Chip size="small" label="1 pt per correct pick" color="primary" />
+          <Typography variant="body2" color="text.secondary">
+            Leaderboard “pts” = season total points.
+          </Typography>
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title="Tiebreakers" id="tiebreakers">
+        <Stack component="ul" spacing={0.5} sx={{ pl: 2, m: 0 }}>
+          {tiebreakers.map((item) => (
+            <Typography key={item} component="li" variant="body2">
+              {item}
+            </Typography>
+          ))}
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title="Fair Play" id="fair-play">
+        <Stack component="ul" spacing={0.5} sx={{ pl: 2, m: 0 }}>
+          {fairPlay.map((item) => (
+            <Typography key={item} component="li" variant="body2">
+              {item}
+            </Typography>
+          ))}
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title="FAQ" id="faq">
+        <Stack spacing={1}>
+          {faqItems.map((item) => (
+            <Accordion key={item.q} disableGutters>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="body2" fontWeight={600}>
+                  {item.q}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography variant="body2" color="text.secondary">
+                  {item.a}
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </Stack>
+      </SectionCard>
     </Container>
   )
 }
