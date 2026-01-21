@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { auth } from '../../firebase/firebase'
 import {
   GoogleAuthProvider,
-  // GithubAuthProvider,
   FacebookAuthProvider,
   signInWithPopup,
   createUserWithEmailAndPassword,
@@ -30,7 +29,6 @@ import {
 import {
   LockOutlined as LockOutlinedIcon,
   Google as GoogleIcon,
-  // GitHub as GitHubIcon,
   Facebook as FacebookIcon,
 } from '@mui/icons-material'
 import Footer from '../layout/Footer'
@@ -86,20 +84,6 @@ export default function SignUp() {
     }
   }
 
-  // const handleGitHubSignIn = async (e) => {
-  //   e.preventDefault()
-  //   setIsSocialMediaSigningIn(true)
-  //   const provider = new GithubAuthProvider()
-  //   try {
-  //     const result = await signInWithPopup(auth, provider)
-  //     console.log('GitHub sign-in result:', result)
-  //     navigate('/dashboard')
-  //   } catch (error) {
-  //     console.error('Error during sign-in with popup:', error)
-  //     setErrorMessage('Error during sign-in. Please try again.')
-  //     setIsSocialMediaSigningIn(false)
-  //   }
-  // }
 
   const handleFacebookSignIn = async (e) => {
     e.preventDefault()

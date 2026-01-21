@@ -6,8 +6,6 @@ import SignUp from './components/pages/SignUp'
 import SignIn from './components/pages/SignIn'
 import Dashboard from './components/pages/Dashboard'
 import EmailVerificationHandler from './components/auth/EmailVerificationHandler'
-import HadiCapping from './components/gameData/HandiCapping' // Assuming HadiCapping is a page component
-import Admin from './components/pages/Admin'
 import ForgotPassword from './components/pages/ForgotPassword'
 import Access from './components/pages/Access'
 import SuperBowlSquares from './components/pages/SuperBowlSquares'
@@ -56,7 +54,6 @@ function App() {
     //   <CssBaseline />
     <Router>
       <Routes>
-        {/* May need to add a admin route here could potentially be used for admin dashboard with / route */}
         <Route path="/" element={<Access />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
@@ -70,8 +67,6 @@ function App() {
           }
         />
         <Route path="/superbowl" element={<SuperBowlSquares />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/hadicapping" element={<HadiCapping />} /> {/* Add the HadiCapping route */}
         {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
     </Router>

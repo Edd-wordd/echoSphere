@@ -8,7 +8,6 @@ import SportsFootballIcon from '@mui/icons-material/SportsFootball'
 import RuleIcon from '@mui/icons-material/Rule'
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
 import SettingsIcon from '@mui/icons-material/Settings'
-import PeopleIcon from '@mui/icons-material/People'
 import EventAvailableIcon from '@mui/icons-material/EventAvailable'
 
 export function MainListItems({ onSelectItem }) {
@@ -62,12 +61,6 @@ export function SecondaryListItems({ onSelectItem, isAdmin }) {
       <ListSubheader component="div" inset>
         Admin
       </ListSubheader>
-      <ListItemButton onClick={() => onSelectItem('ManageUsers')}>
-        <ListItemIcon>
-          <PeopleIcon />
-        </ListItemIcon>
-        <ListItemText primary="Manage Users" />
-      </ListItemButton>
       <ListItemButton onClick={() => onSelectItem('ManageWeeks')}>
         <ListItemIcon>
           <EventAvailableIcon />

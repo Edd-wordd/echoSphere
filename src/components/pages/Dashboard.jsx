@@ -28,7 +28,6 @@ import { useNavigate } from 'react-router-dom'
 import { auth } from '../../firebase/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { MainListItems, SecondaryListItems } from '../layout/ListItems'
-import UsersDetails from '../users/UsersDetails'
 import RulesData from '../gameData/RulesData'
 import UsersDashboard from '../users/UsersDashboard'
 import MakePicks from './MakePicks'
@@ -211,8 +210,6 @@ export default function Dashboard() {
             </Typography>
           </Box>
         )
-      case 'ManageUsers':
-        return <UsersDetails />
       case 'ManageWeeks':
         return (
           <Box>
