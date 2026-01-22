@@ -84,7 +84,6 @@ export default function SignUp() {
     }
   }
 
-
   const handleFacebookSignIn = async (e) => {
     e.preventDefault()
     setIsSocialMediaSigningIn(true)

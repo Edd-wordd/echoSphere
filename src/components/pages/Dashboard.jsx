@@ -39,8 +39,7 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  background:
-    'linear-gradient(90deg, #0b0c0f 0%, #1c0b16 25%, #10141b 55%, #0c1714 100%)',
+  background: 'linear-gradient(90deg, #0b0c0f 0%, #1c0b16 25%, #10141b 55%, #0c1714 100%)',
   color: '#e8ebf4',
   boxShadow: '0 10px 40px rgba(0,0,0,0.55)',
   borderBottom: '1px solid rgba(255,255,255,0.08)',
