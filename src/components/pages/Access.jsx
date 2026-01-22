@@ -1,15 +1,27 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Box, TextField, Button, Typography, Paper, Stack } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import Spline from '@splinetool/react-spline'
 
 const VALID_ACCESS_NUMBERS = ['12345', 'abcde', '2024', '123'] // Demo only
 const SPLINE_SCENE_URL = 'https://prod.spline.design/byX3TPqdB123e57B/scene.splinecode'
+
+const loadSpline = () => {
+  try {
+    if (typeof window === 'undefined') return null
+    // dynamic require so Jest doesn't need the module when running in node
+    const mod = require('@splinetool/react-spline')
+    return mod?.default || mod
+  } catch (err) {
+    console.warn('Spline not available, skipping render in this environment.')
+    return null
+  }
+}
 
 function Access() {
   const [accessNumber, setAccessNumber] = useState('')
   const [result, setResult] = useState(null) // null | "success" | "denied"
   const [loading, setLoading] = useState(false)
+  const SplineComponent = useMemo(() => loadSpline(), [])
   const navigate = useNavigate()
 
   const handleChange = (e) => {
@@ -81,7 +93,7 @@ function Access() {
             maxHeight: '1400px',
           }}
         >
-          <Spline scene={SPLINE_SCENE_URL} />
+          {SplineComponent && <SplineComponent scene={SPLINE_SCENE_URL} />}
         </Box>
       </Box>
 
@@ -192,7 +204,7 @@ function Access() {
           <form onSubmit={handleSubmit}>
             <Stack spacing={1.5}>
               <Typography variant="subtitle1" align="center" sx={{ fontWeight: 700 }}>
-                Enter Access Code
+                Enter Access Number
               </Typography>
               <TextField
                 size="small"
