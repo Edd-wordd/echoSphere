@@ -130,20 +130,39 @@ const ThisWeekCard = ({
   }, [games, tieBreaker])
 
   return (
-    <Card>
-      <CardContent>
+    <Card
+      sx={{
+        backgroundColor: 'rgba(15,15,17,0.9)',
+        color: '#f5f7ff',
+        borderRadius: 2.5,
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.45)',
+        backdropFilter: 'blur(10px)',
+      }}
+    >
+      <CardContent sx={{ color: '#e9ecf5' }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-          <Typography variant="h6">This Week</Typography>
-          <Chip label={`Week ${weekNumber}`} color="primary" size="small" />
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            This Week
+          </Typography>
+          <Chip
+            label={`Week ${weekNumber}`}
+            size="small"
+            sx={{
+              background: 'linear-gradient(120deg, #7c4dff 0%, #00c853 100%)',
+              color: '#0b0c0f',
+              fontWeight: 700,
+            }}
+          />
         </Stack>
         <Stack spacing={1} mb={2}>
           <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="rgba(233,236,245,0.7)">
               Picks
             </Typography>
             <Chip label={statusLabel} color={statusColor} size="small" />
           </Stack>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="rgba(233,236,245,0.7)">
             Lock deadline
           </Typography>
           <Typography variant="body1">{lockDeadline}</Typography>
@@ -167,18 +186,18 @@ const ThisWeekCard = ({
         {picksSubmitted && (
           <>
             <Stack spacing={0.5} mb={2}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="rgba(233,236,245,0.7)">
                 Picks Overview
               </Typography>
               <Typography variant="body2" fontWeight={600}>
                 Picks saved: {summary.total} / {games.length}
               </Typography>
               {summary.favorites + summary.underdogs > 0 && (
-                <Typography variant="body2">
+                <Typography variant="body2" color="rgba(233,236,245,0.9)">
                   Favorites: {summary.favorites} • Underdogs: {summary.underdogs}
                 </Typography>
               )}
-              <Typography variant="body2">
+              <Typography variant="body2" color="rgba(233,236,245,0.9)">
                 Home: {summary.home} • Away: {summary.away}
               </Typography>
               {progress.finishedCount > 0 && (
@@ -188,7 +207,7 @@ const ThisWeekCard = ({
                 </Typography>
               )}
               {tieInfo && (
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="rgba(233,236,245,0.7)">
                   Tie-breaker: {tieInfo.matchup}
                   {tieInfo.totalPoints != null ? ` • Your guess: ${tieInfo.totalPoints}` : ''}
                 </Typography>
@@ -196,7 +215,12 @@ const ThisWeekCard = ({
               <Button
                 size="small"
                 variant="text"
-                sx={{ alignSelf: 'flex-start', mt: 0.5, textTransform: 'none' }}
+                sx={{
+                  alignSelf: 'flex-start',
+                  mt: 0.5,
+                  textTransform: 'none',
+                  color: '#8be9c6',
+                }}
                 onClick={() => setModalOpen(true)}
               >
                 View all picks
@@ -206,7 +230,7 @@ const ThisWeekCard = ({
             {previews.length > 0 && (
               <Stack spacing={1} mb={2}>
                 <Divider />
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="rgba(233,236,245,0.7)">
                   Upcoming picks
                 </Typography>
                 {previews.map((preview) => (
@@ -247,30 +271,58 @@ const ThisWeekCard = ({
           onClick={onManagePicks}
           fullWidth
           disabled={picksSubmitted && isLocked}
+          sx={{
+            mt: 1,
+            fontWeight: 800,
+            textTransform: 'none',
+            background: !picksSubmitted
+              ? 'linear-gradient(120deg, #ff5252, #d32f2f)'
+              : 'linear-gradient(120deg, #7c4dff, #00c853)',
+            '&:hover': {
+              background: !picksSubmitted
+                ? 'linear-gradient(120deg, #ff6e6e, #e53935)'
+                : 'linear-gradient(120deg, #6c3ff0, #00b84a)',
+            },
+            boxShadow: '0 12px 30px rgba(0,0,0,0.4)',
+          }}
         >
           {!picksSubmitted ? 'MAKE PICKS NOW' : isLocked ? 'PICKS LOCKED' : 'EDIT PICKS'}
         </Button>
 
-        <Dialog open={modalOpen} onClose={() => setModalOpen(false)} fullWidth maxWidth="sm">
-          <DialogTitle>Picks for Week {weekNumber}</DialogTitle>
-          <DialogContent dividers>
+        <Dialog
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          fullWidth
+          maxWidth="sm"
+          PaperProps={{
+            sx: {
+              backgroundColor: 'rgba(10,10,12,0.95)',
+              color: '#f5f7ff',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.55)',
+              backdropFilter: 'blur(12px)',
+            },
+          }}
+        >
+          <DialogTitle sx={{ fontWeight: 700 }}>Picks for Week {weekNumber}</DialogTitle>
+          <DialogContent dividers sx={{ borderColor: 'rgba(255,255,255,0.08)' }}>
             {tieInfo && (
               <Stack spacing={0.5} mb={2}>
-                <Typography variant="body2" fontWeight={600}>
+                <Typography variant="body2" fontWeight={600} color="#e9ecf5">
                   Tie-breaker
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body2" color="rgba(233,236,245,0.9)">
                   {tieInfo.matchup}
                   {tieInfo.kickoff ? ` — ${tieInfo.kickoff}` : ''}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="rgba(233,236,245,0.7)">
                   Your guess: {tieInfo.totalPoints != null ? tieInfo.totalPoints : '—'}
                 </Typography>
-                <Divider sx={{ mt: 1 }} />
+                <Divider sx={{ mt: 1, borderColor: 'rgba(255,255,255,0.08)' }} />
               </Stack>
             )}
             {fullPickList.length === 0 ? (
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="rgba(233,236,245,0.7)">
                 No picks yet.
               </Typography>
             ) : (
@@ -281,13 +333,13 @@ const ThisWeekCard = ({
                       primary={item.label}
                       secondary={
                         <>
-                          <Typography component="span" variant="body2" color="text.primary">
+                          <Typography component="span" variant="body2" color="#e9ecf5">
                             Picked: {item.picked}
                           </Typography>
                           <Typography
                             component="span"
                             variant="caption"
-                            color="text.secondary"
+                            color="rgba(233,236,245,0.7)"
                             sx={{ display: 'block' }}
                           >
                             {item.kickoff}
@@ -300,12 +352,20 @@ const ThisWeekCard = ({
               </List>
             )}
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setModalOpen(false)}>Close</Button>
+          <DialogActions sx={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <Button onClick={() => setModalOpen(false)} sx={{ color: '#8be9c6' }}>
+              Close
+            </Button>
             <Button
               onClick={onViewAllPicks || onManagePicks}
               disabled={picksSubmitted && isLocked}
               variant="contained"
+              sx={{
+                textTransform: 'none',
+                fontWeight: 700,
+                background: 'linear-gradient(120deg, #7c4dff, #00c853)',
+                '&:hover': { background: 'linear-gradient(120deg, #6c3ff0, #00b84a)' },
+              }}
             >
               {isLocked ? 'PICKS LOCKED' : 'Edit picks'}
             </Button>

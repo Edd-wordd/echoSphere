@@ -130,23 +130,25 @@ const UsersDashboard = ({ onManagePicks = () => {}, onViewLeaderboard = () => {}
   }
 
   return (
-    <Box padding={2}>
+    <Box padding={2} sx={{ color: '#e9ecf5' }}>
       {dashboardModel.weekResult?.completed && dashboardModel.weekResult.message && (
         <Box
           mb={2}
           p={2}
           sx={{
-            backgroundColor: 'success.light',
-            color: 'success.contrastText',
-            borderRadius: 1,
+            background: 'linear-gradient(120deg, rgba(124,77,255,0.22), rgba(0,200,83,0.18))',
+            color: '#f5f7ff',
+            borderRadius: 2,
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 12px 30px rgba(0,0,0,0.35)',
           }}
         >
-          <Typography variant="body1" fontWeight={600}>
+          <Typography variant="body1" fontWeight={700}>
             {dashboardModel.weekResult.message}
           </Typography>
         </Box>
       )}
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 800 }}>
         Family NFL Picks
       </Typography>
 
