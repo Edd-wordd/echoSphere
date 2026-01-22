@@ -4,10 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import Spline from '@splinetool/react-spline'
 
 const VALID_ACCESS_NUMBERS = ['12345', 'abcde', '2024', '123'] // Demo only
-
-
-
-    
 const SPLINE_SCENE_URL = 'https://prod.spline.design/byX3TPqdB123e57B/scene.splinecode'
 
 function Access() {
@@ -244,6 +240,3 @@ function Access() {
 }
 
 export default Access
-
-
-
