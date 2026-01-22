@@ -5,24 +5,31 @@ import { useNavigate } from 'react-router-dom'
 const VALID_ACCESS_NUMBERS = ['12345', 'abcde', '2024', '123'] // Demo only
 const SPLINE_SCENE_URL = 'https://prod.spline.design/byX3TPqdB123e57B/scene.splinecode'
 
-const loadSpline = () => {
-  try {
-    if (typeof window === 'undefined') return null
-    // dynamic require so Jest doesn't need the module when running in node
-    const mod = require('@splinetool/react-spline')
-    return mod?.default || mod
-  } catch (err) {
-    console.warn('Spline not available, skipping render in this environment.')
-    return null
-  }
-}
-
 function Access() {
   const [accessNumber, setAccessNumber] = useState('')
   const [result, setResult] = useState(null) // null | "success" | "denied"
   const [loading, setLoading] = useState(false)
-  const SplineComponent = useMemo(() => loadSpline(), [])
+  const [SplineComponent, setSplineComponent] = useState(null)
   const navigate = useNavigate()
+
+  // Load Spline only in the browser to avoid build/test issues
+  useEffect(() => {
+    let mounted = true
+    if (typeof window === 'undefined') return undefined
+
+    import('@splinetool/react-spline')
+      .then((mod) => {
+        if (mounted) setSplineComponent(() => mod.default || mod)
+      })
+      .catch((err) => {
+        console.warn('Spline not available, skipping render in this environment.', err)
+        if (mounted) setSplineComponent(null)
+      })
+
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   const handleChange = (e) => {
     setAccessNumber(e.target.value)
