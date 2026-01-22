@@ -39,6 +39,11 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
+  background: 'linear-gradient(90deg, #0b0c0f 0%, #1c0b16 25%, #10141b 55%, #0c1714 100%)',
+  color: '#e8ebf4',
+  boxShadow: '0 10px 40px rgba(0,0,0,0.55)',
+  borderBottom: '1px solid rgba(255,255,255,0.08)',
+  backdropFilter: 'blur(12px)',
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -58,6 +63,10 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     '& .MuiDrawer-paper': {
       position: 'relative',
       whiteSpace: 'nowrap',
+      backgroundColor: 'rgba(10, 10, 12, 0.95)',
+      color: '#e9ecf5',
+      borderRight: '1px solid rgba(255,255,255,0.08)',
+      backdropFilter: 'blur(10px)',
       width: drawerWidth,
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
@@ -290,8 +299,12 @@ export default function Dashboard() {
       <Box
         component="main"
         sx={{
-          backgroundColor: (theme) =>
-            theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
+          background: `
+            radial-gradient(circle at 20% 20%, rgba(124,77,255,0.10), transparent 32%),
+            radial-gradient(circle at 80% 0%, rgba(0,200,83,0.12), transparent 30%),
+            radial-gradient(circle at 50% 120%, rgba(255,64,129,0.18), transparent 35%),
+            #050507`,
+          color: '#e9ecf5',
           flexGrow: 1,
           height: '100vh',
           overflow: 'auto',
@@ -302,7 +315,19 @@ export default function Dashboard() {
           <Grid container spacing={3}>
             {/* Main Content */}
             <Grid item xs={12}>
-              <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+              <Paper
+                sx={{
+                  p: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  backgroundColor: 'rgba(15,15,17,0.9)',
+                  color: '#f5f7ff',
+                  borderRadius: 2.5,
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  boxShadow: '0 20px 60px rgba(0,0,0,0.45)',
+                  backdropFilter: 'blur(12px)',
+                }}
+              >
                 {renderSelectedComponent()}
               </Paper>
             </Grid>

@@ -31,28 +31,38 @@ const LeaderboardRow = ({ entry, isCurrent }) => (
   <ListItem
     disableGutters
     sx={{
-      backgroundColor: isCurrent ? 'action.hover' : 'transparent',
-      borderRadius: 1,
+      backgroundColor: isCurrent ? 'rgba(139,233,198,0.08)' : 'transparent',
+      borderRadius: 1.5,
       px: 1,
     }}
     secondaryAction={
       <Stack direction="row" spacing={1} alignItems="center">
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="rgba(233,236,245,0.7)">
           {entry.points} pts
         </Typography>
-        {isCurrent && <Chip label="You" color="primary" size="small" />}
+        {isCurrent && (
+          <Chip
+            label="You"
+            size="small"
+            sx={{
+              background: 'linear-gradient(120deg, #7c4dff, #00c853)',
+              color: '#0b0c0f',
+              fontWeight: 700,
+            }}
+          />
+        )}
         {movementChip(entry.rankDelta)}
       </Stack>
     }
   >
     <ListItemText
       primary={
-        <Typography variant="body1" fontWeight={isCurrent ? 700 : 500}>
+        <Typography variant="body1" fontWeight={isCurrent ? 700 : 500} color="#f5f7ff">
           {entry.rank}. {entry.displayName}
         </Typography>
       }
       secondary={
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="rgba(233,236,245,0.7)">
           {entry.record}
         </Typography>
       }
@@ -69,9 +79,18 @@ const LeaderboardCard = ({ entries = [], currentUserId, onViewFull }) => {
   }, [entries, currentUserId])
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
+    <Card
+      sx={{
+        backgroundColor: 'rgba(15,15,17,0.9)',
+        color: '#f5f7ff',
+        borderRadius: 2.5,
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.45)',
+        backdropFilter: 'blur(10px)',
+      }}
+    >
+      <CardContent sx={{ color: '#e9ecf5' }}>
+        <Typography variant="h6" gutterBottom sx={{ fontWeight: 700 }}>
           Leaderboard
         </Typography>
         <List dense>
@@ -84,9 +103,9 @@ const LeaderboardCard = ({ entries = [], currentUserId, onViewFull }) => {
           ))}
           {!isMeInTop10 && me && (
             <>
-              <Divider sx={{ my: 1 }} />
+              <Divider sx={{ my: 1, borderColor: 'rgba(255,255,255,0.08)' }} />
               <ListItem disableGutters sx={{ justifyContent: 'center', py: 0.5 }}>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="rgba(233,236,245,0.7)">
                   ...
                 </Typography>
               </ListItem>
@@ -97,7 +116,12 @@ const LeaderboardCard = ({ entries = [], currentUserId, onViewFull }) => {
         <Button
           variant="text"
           size="small"
-          sx={{ mt: 1, textTransform: 'none' }}
+          sx={{
+            mt: 1,
+            textTransform: 'none',
+            color: '#8be9c6',
+            fontWeight: 700,
+          }}
           onClick={onViewFull}
         >
           View full leaderboard →
