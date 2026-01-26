@@ -4,11 +4,8 @@ import Link from '@mui/material/Link'
 
 function Footer(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        echoSphere
-      </Link>{' '}
+    <Typography variant="body2" color="#f5f7ff" align="center" {...props}>
+      {'Copyright © EchoSphere '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>

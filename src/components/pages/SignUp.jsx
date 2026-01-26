@@ -171,6 +171,7 @@ export default function SignUp() {
           email,
           createdAt: serverTimestamp(),
           uid: user.uid,
+          role: 'user',
         })
       } catch (firestoreError) {
         console.error('Error saving to Firestore:', firestoreError)

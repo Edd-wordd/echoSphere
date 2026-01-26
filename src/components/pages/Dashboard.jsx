@@ -24,10 +24,13 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import SettingsIcon from '@mui/icons-material/Settings'
 import Footer from '../layout/Footer'
 import { signOut } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, NavLink } from 'react-router-dom'
 import { auth } from '../../firebase/firebase'
-import { onAuthStateChanged } from 'firebase/auth'
-import { MainListItems, SecondaryListItems } from '../layout/ListItems'
+import { useAuthProfile } from '../../hooks/useAuthProfile'
+import { MainListItems, StyledListItemButton } from '../layout/ListItems'
+import ListSubheader from '@mui/material/ListSubheader'
+import ListItemText from '@mui/material/ListItemText'
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import RulesData from '../gameData/RulesData'
 import UsersDashboard from '../users/UsersDashboard'
 import MakePicks from './MakePicks'
@@ -93,8 +96,7 @@ export default function Dashboard() {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [selectedComponent, setSelectedComponent] = React.useState('Dashboard')
   const navigate = useNavigate()
-  const [user, setUser] = React.useState(null)
-  const [isAdmin, setIsAdmin] = React.useState(false)
+  const { user, isAdmin } = useAuthProfile()
 
   // Toggle the drawer
   const toggleDrawer = () => {
@@ -115,31 +117,11 @@ export default function Dashboard() {
   const handleLogout = async () => {
     try {
       await signOut(auth)
-      navigate('/SignIn')
+      navigate('/signin')
     } catch (error) {
       console.error('Error during logout:', error)
     }
   }
-
-  // Subscribe to auth state changes
-  React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        console.log('User logged in:', currentUser) // Debugging
-        setUser(currentUser)
-        setIsAdmin(!!currentUser?.email?.includes('admin'))
-      } else {
-        console.log('No user is logged in') // Debugging
-        setUser(null)
-        setIsAdmin(false)
-      }
-    })
-    return () => {
-      if (typeof unsubscribe === 'function') {
-        unsubscribe()
-      }
-    }
-  }, [])
 
   const isMenuOpen = Boolean(anchorEl)
 
@@ -219,17 +201,6 @@ export default function Dashboard() {
             </Typography>
           </Box>
         )
-      case 'ManageWeeks':
-        return (
-          <Box>
-            <Typography variant="h5" gutterBottom>
-              Manage Weeks
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Admin tools to manage weeks and lock times.
-            </Typography>
-          </Box>
-        )
       default:
         return <UsersDashboard onManagePicks={() => setSelectedComponent('MakePicks')} />
     }
@@ -292,8 +263,20 @@ export default function Dashboard() {
         <Divider />
         <List component="nav">
           <MainListItems onSelectItem={setSelectedComponent} />
-          <Divider sx={{ my: 1 }} />
-          <SecondaryListItems onSelectItem={setSelectedComponent} isAdmin={isAdmin} />
+          {isAdmin && (
+            <>
+              <Divider sx={{ my: 1 }} />
+              <ListSubheader component="div" inset sx={{ color: 'rgba(233,236,245,0.7)' }}>
+                Admin
+              </ListSubheader>
+              <StyledListItemButton component={NavLink} to="/admin/overview">
+                <ListItemIcon sx={{ color: '#f5f7ff' }}>
+                  <AdminPanelSettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Admin Dashboard" />
+              </StyledListItemButton>
+            </>
+          )}
         </List>
       </Drawer>
       <Box
