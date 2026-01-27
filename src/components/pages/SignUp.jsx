@@ -13,28 +13,55 @@ import {
 } from 'firebase/auth'
 import { collection, query, where, getDocs, doc, setDoc, serverTimestamp } from 'firebase/firestore'
 import {
-  Grid,
   Box,
-  CssBaseline,
-  Avatar,
   Typography,
   TextField,
   Button,
   Link,
-  Container,
   Alert,
   Backdrop,
   CircularProgress,
+  Stack,
+  Grid,
+  IconButton,
+  InputAdornment,
 } from '@mui/material'
-import {
-  LockOutlined as LockOutlinedIcon,
-  Google as GoogleIcon,
-  Facebook as FacebookIcon,
-} from '@mui/icons-material'
+import SportsFootballIcon from '@mui/icons-material/SportsFootball'
+import GoogleIcon from '@mui/icons-material/Google'
+import FacebookIcon from '@mui/icons-material/Facebook'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 import Footer from '../layout/Footer'
 import { firestore } from '../../firebase/firebase'
-import { Visibility, VisibilityOff } from '@mui/icons-material'
-import { IconButton, InputAdornment } from '@mui/material'
+import { glassyCard, mainBackground } from '../../styles/adminStyles'
+
+const glassAuthCard = {
+  ...glassyCard,
+  maxWidth: 440,
+  width: '100%',
+  borderRadius: 2.5,
+  border: '1px solid rgba(255,255,255,0.08)',
+  boxShadow: '0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04)',
+  backdropFilter: 'blur(16px)',
+}
+
+const inputSx = {
+  '& .MuiOutlinedInput-root': {
+    bgcolor: 'rgba(255,255,255,0.04)',
+    borderRadius: 1.5,
+    '& fieldset': { borderColor: 'rgba(255,255,255,0.12)' },
+    '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.18)' },
+    '&.Mui-focused fieldset': {
+      borderColor: 'rgba(124,77,255,0.5)',
+      boxShadow: '0 0 0 1px rgba(124,77,255,0.25)',
+    },
+    '&.Mui-error fieldset': {
+      borderColor: 'rgba(255,82,82,0.5)',
+    },
+  },
+  '& .MuiInputLabel-root': { color: 'rgba(233,236,245,0.6)' },
+  '& .MuiInputBase-input': { color: '#e9ecf5' },
+  '& .MuiFormHelperText-root': { color: 'rgba(233,236,245,0.5)', fontSize: '0.75rem' },
+}
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -212,29 +239,106 @@ export default function SignUp() {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
+    <Box
+      sx={{
+        ...mainBackground,
+        width: '100vw',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflowX: 'hidden',
+        py: 4,
+        px: 2,
+      }}
+    >
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{
+          color: '#fff',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          bgcolor: 'rgba(0,0,0,0.6)',
+        }}
         open={isSubmitting || isSocialMediaSigningIn}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+
+      <Box
+        component="div"
+        sx={{
+          ...glassAuthCard,
+          p: 3,
+        }}
+      >
+        <Stack alignItems="center" spacing={1.5} sx={{ mb: 2.5 }}>
+          <Box
+            sx={{
+              width: 44,
+              height: 44,
+              borderRadius: 2,
+              bgcolor: 'rgba(124,77,255,0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <SportsFootballIcon sx={{ fontSize: 24, color: 'rgba(183,148,246,0.95)' }} />
+          </Box>
+          <Typography
+            component="h1"
+            sx={{
+              fontSize: '1.25rem',
+              fontWeight: 700,
+              color: '#e9ecf5',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            Create your account
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'rgba(233,236,245,0.55)',
+              fontSize: '0.8125rem',
+              textAlign: 'center',
+            }}
+          >
+            Join your league and start making picks.
+          </Typography>
+        </Stack>
+
+        <Box component="form" noValidate onSubmit={handleSubmit}>
+          {errorMessage && (
+            <Alert
+              severity="error"
+              sx={{
+                mb: 2,
+                bgcolor: 'rgba(255,82,82,0.1)',
+                color: '#ff8a80',
+                '& .MuiAlert-icon': { color: '#ff8a80' },
+                border: '1px solid rgba(255,82,82,0.2)',
+              }}
+            >
+              {errorMessage}
+            </Alert>
+          )}
           {emailSentAlert && (
-            <Alert severity="success">
+            <Alert
+              severity="success"
+              sx={{
+                mb: 2,
+                bgcolor: 'rgba(0,200,83,0.1)',
+                color: '#81c784',
+                '& .MuiAlert-icon': { color: '#81c784' },
+                border: '1px solid rgba(0,200,83,0.2)',
+              }}
+            >
               Email verification has been sent. Please check your email.
             </Alert>
           )}
-          <Grid container spacing={2}>
+
+          <Grid container spacing={1.5}>
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="given-name"
@@ -242,12 +346,15 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="firstName"
-                label="First Name"
+                label="First name"
                 autoFocus
+                variant="outlined"
+                size="small"
                 onChange={handleChange}
                 helperText={errors.firstName}
                 error={!!errors.firstName}
                 value={userCredentials.firstName}
+                sx={inputSx}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -255,13 +362,16 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="lastName"
-                label="Last Name"
+                label="Last name"
                 name="lastName"
                 autoComplete="family-name"
+                variant="outlined"
+                size="small"
                 onChange={handleChange}
                 helperText={errors.lastName}
                 error={!!errors.lastName}
                 value={userCredentials.lastName}
+                sx={inputSx}
               />
             </Grid>
             <Grid item xs={12}>
@@ -269,13 +379,17 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Email address"
                 name="email"
+                type="email"
                 autoComplete="email"
+                variant="outlined"
+                size="small"
                 onChange={handleChange}
                 helperText={errors.email}
                 error={!!errors.email}
                 value={userCredentials.email}
+                sx={inputSx}
               />
             </Grid>
             <Grid item xs={12}>
@@ -287,10 +401,13 @@ export default function SignUp() {
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 autoComplete="new-password"
+                variant="outlined"
+                size="small"
                 onChange={handleChange}
                 helperText={errors.password}
                 error={!!errors.password}
                 value={userCredentials.password}
+                sx={inputSx}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -298,6 +415,7 @@ export default function SignUp() {
                         aria-label="toggle password visibility"
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
+                        sx={{ color: 'rgba(233,236,245,0.6)' }}
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
@@ -307,58 +425,114 @@ export default function SignUp() {
               />
             </Grid>
           </Grid>
+
           <Button
             type="submit"
             fullWidth
             variant="contained"
+            size="medium"
             disabled={isSubmitDisabled || isSubmitting}
-            sx={{ mt: 3, mb: 2 }}
+            sx={{
+              mt: 2,
+              py: 1.25,
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              textTransform: 'none',
+              bgcolor: 'rgba(124,77,255,0.4)',
+              color: '#e9ecf5',
+              border: '1px solid rgba(255,255,255,0.12)',
+              '&:hover': {
+                bgcolor: 'rgba(124,77,255,0.5)',
+                borderColor: 'rgba(255,255,255,0.18)',
+              },
+              '&.Mui-disabled': {
+                bgcolor: 'rgba(124,77,255,0.15)',
+                color: 'rgba(233,236,245,0.4)',
+                borderColor: 'rgba(255,255,255,0.06)',
+              },
+            }}
           >
-            {isSubmitting ? 'Submitting...' : 'Sign Up'}
+            {isSubmitting ? 'Creating account...' : 'Create account'}
           </Button>
-          <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, mb: 2 }}>
-            <Box sx={{ flex: 1, height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.12)' }} />
-            <Typography variant="body2" sx={{ mx: 2 }}>
+
+          <Stack
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ mt: 2 }}
+          >
+            <Link
+              href="/signin"
+              variant="body2"
+              sx={{
+                color: 'rgba(233,236,245,0.55)',
+                fontSize: '0.8rem',
+                textDecoration: 'none',
+                '&:hover': { color: 'rgba(183,148,246,0.9)', textDecoration: 'underline' },
+              }}
+            >
+              Already have an account? Sign in
+            </Link>
+          </Stack>
+
+          <Stack direction="row" alignItems="center" spacing={1.5} sx={{ my: 2 }}>
+            <Box sx={{ flex: 1, height: 1, bgcolor: 'rgba(255,255,255,0.08)' }} />
+            <Typography variant="caption" sx={{ color: 'rgba(233,236,245,0.4)', fontSize: '0.75rem' }}>
               or
             </Typography>
-            <Box sx={{ flex: 1, height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.12)' }} />
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
+            <Box sx={{ flex: 1, height: 1, bgcolor: 'rgba(255,255,255,0.08)' }} />
+          </Stack>
+
+          <Stack direction="row" spacing={1.5}>
             <Button
               fullWidth
               variant="outlined"
-              startIcon={<GoogleIcon />}
+              size="small"
+              startIcon={<GoogleIcon sx={{ fontSize: 18 }} />}
               onClick={handleGoogleSignIn}
+              sx={{
+                py: 1,
+                textTransform: 'none',
+                fontSize: '0.8rem',
+                fontWeight: 500,
+                bgcolor: 'rgba(255,255,255,0.04)',
+                borderColor: 'rgba(255,255,255,0.12)',
+                color: 'rgba(233,236,245,0.8)',
+                '&:hover': {
+                  borderColor: 'rgba(255,255,255,0.2)',
+                  bgcolor: 'rgba(255,255,255,0.06)',
+                },
+              }}
             >
-              Sign in with Google
+              Google
             </Button>
-            {/* <Button
-              fullWidth
-              variant="outlined"
-              startIcon={<GitHubIcon />}
-              onClick={handleGitHubSignIn}
-            >
-              Sign in with GitHub
-            </Button> */}
             <Button
               fullWidth
               variant="outlined"
-              startIcon={<FacebookIcon />}
+              size="small"
+              startIcon={<FacebookIcon sx={{ fontSize: 18 }} />}
               onClick={handleFacebookSignIn}
+              sx={{
+                py: 1,
+                textTransform: 'none',
+                fontSize: '0.8rem',
+                fontWeight: 500,
+                bgcolor: 'rgba(255,255,255,0.04)',
+                borderColor: 'rgba(255,255,255,0.12)',
+                color: 'rgba(233,236,245,0.8)',
+                '&:hover': {
+                  borderColor: 'rgba(255,255,255,0.2)',
+                  bgcolor: 'rgba(255,255,255,0.06)',
+                },
+              }}
             >
-              Sign in with Facebook
+              Facebook
             </Button>
-          </Box>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link href="/signin" variant="body2">
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
+          </Stack>
         </Box>
       </Box>
-      <Footer sx={{ mt: 5 }} />
-    </Container>
+
+      <Footer sx={{ mt: 3, color: 'rgba(233,236,245,0.4)', fontSize: '0.75rem' }} />
+    </Box>
   )
 }

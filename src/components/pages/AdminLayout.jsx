@@ -27,7 +27,7 @@ import { signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../../firebase/firebase'
 import Footer from '../layout/Footer'
-import { AdminListItems } from '../layout/ListItems'
+import { AdminListItems } from '../layout/SideNavBar'
 import { useAuthProfile } from '../../hooks/useAuthProfile'
 import { mainPaper, mainBackground } from '../../styles/adminStyles'
 
@@ -40,11 +40,17 @@ const AppBar = styled(MuiAppBar, { shouldForwardProp: (p) => p !== 'open' })(({ 
   boxShadow: '0 10px 40px rgba(0,0,0,0.55)',
   borderBottom: '1px solid rgba(255,255,255,0.08)',
   backdropFilter: 'blur(12px)',
-  transition: theme.transitions.create(['width', 'margin'], { easing: theme.transitions.easing.sharp, duration: theme.transitions.duration.leavingScreen }),
+  transition: theme.transitions.create(['width', 'margin'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], { easing: theme.transitions.easing.sharp, duration: theme.transitions.duration.enteringScreen }),
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   }),
 }))
 
@@ -57,11 +63,17 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (p) => p !== 'open' })(({ 
     borderRight: '1px solid rgba(255,255,255,0.08)',
     backdropFilter: 'blur(10px)',
     width: drawerWidth,
-    transition: theme.transitions.create('width', { easing: theme.transitions.easing.sharp, duration: theme.transitions.duration.enteringScreen }),
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
     boxSizing: 'border-box',
     ...(!open && {
       overflowX: 'hidden',
-      transition: theme.transitions.create('width', { easing: theme.transitions.easing.sharp, duration: theme.transitions.duration.leavingScreen }),
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
       width: theme.spacing(7),
       [theme.breakpoints.up('sm')]: { width: theme.spacing(9) },
     }),
@@ -91,7 +103,13 @@ export default function AdminLayout() {
       <CssBaseline />
       <AppBar position="absolute" open={open}>
         <Toolbar sx={{ pr: '24px' }}>
-          <IconButton edge="start" color="inherit" aria-label="open drawer" onClick={toggleDrawer} sx={{ marginRight: '36px', ...(open && { display: 'none' }) }}>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={toggleDrawer}
+            sx={{ marginRight: '36px', ...(open && { display: 'none' }) }}
+          >
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
@@ -102,21 +120,32 @@ export default function AdminLayout() {
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <IconButton edge="end" aria-label="account" aria-haspopup="true" onClick={handleProfileOpen} color="inherit">
+          <IconButton
+            edge="end"
+            aria-label="account"
+            aria-haspopup="true"
+            onClick={handleProfileOpen}
+            color="inherit"
+          >
             <AccountCircle />
           </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', px: 1 }}>
-          <IconButton onClick={toggleDrawer}><ChevronLeftIcon /></IconButton>
+          <IconButton onClick={toggleDrawer}>
+            <ChevronLeftIcon />
+          </IconButton>
         </Toolbar>
         <Divider />
         <List component="nav">
           <AdminListItems />
         </List>
       </Drawer>
-      <Box component="main" sx={{ ...mainBackground, flexGrow: 1, height: '100vh', overflow: 'auto' }}>
+      <Box
+        component="main"
+        sx={{ ...mainBackground, flexGrow: 1, height: '100vh', overflow: 'auto' }}
+      >
         <Toolbar />
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Grid container spacing={3}>
@@ -129,10 +158,32 @@ export default function AdminLayout() {
           <Footer sx={{ pt: 4 }} />
         </Container>
       </Box>
-      <Menu anchorEl={anchorEl} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} keepMounted transformOrigin={{ vertical: 'top', horizontal: 'right' }} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-        <MenuItem onClick={handleMenuClose}><ListItemIcon><AccountBoxIcon /></ListItemIcon>Profile</MenuItem>
-        <MenuItem onClick={handleMenuClose}><ListItemIcon><SettingsIcon /></ListItemIcon>Settings</MenuItem>
-        <MenuItem onClick={handleLogout}><ListItemIcon><AccountCircle /></ListItemIcon>Logout</MenuItem>
+      <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        keepMounted
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleMenuClose}>
+          <ListItemIcon>
+            <AccountBoxIcon />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+          <ListItemIcon>
+            <SettingsIcon />
+          </ListItemIcon>
+          Settings
+        </MenuItem>
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <AccountCircle />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
       </Menu>
     </Box>
   )

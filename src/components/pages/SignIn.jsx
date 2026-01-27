@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
-import CssBaseline from '@mui/material/CssBaseline'
-import TextField from '@mui/material/TextField'
-import Link from '@mui/material/Link'
-import Paper from '@mui/material/Paper'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
-import Typography from '@mui/material/Typography'
-import Footer from '../layout/Footer'
-import Alert from '@mui/material/Alert'
-import Backdrop from '@mui/material/Backdrop'
-import CircularProgress from '@mui/material/CircularProgress'
+import {
+  Box,
+  Button,
+  TextField,
+  Link,
+  Typography,
+  Stack,
+  Alert,
+  Backdrop,
+  CircularProgress,
+} from '@mui/material'
+import SportsFootballIcon from '@mui/icons-material/SportsFootball'
 import GoogleIcon from '@mui/icons-material/Google'
 import FacebookIcon from '@mui/icons-material/Facebook'
 import {
@@ -26,8 +24,33 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth'
 import { processUserData } from '../utilis/ProcessUserData'
+import { glassyCard, mainBackground } from '../../styles/adminStyles'
+import Footer from '../layout/Footer'
 
-// TODO need to add the forgot password functionality and the error feedback to the user when the user is not found or the password is incorrect
+const glassAuthCard = {
+  ...glassyCard,
+  maxWidth: 400,
+  width: '100%',
+  borderRadius: 2.5,
+  border: '1px solid rgba(255,255,255,0.08)',
+  boxShadow: '0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04)',
+  backdropFilter: 'blur(16px)',
+}
+
+const inputSx = {
+  '& .MuiOutlinedInput-root': {
+    bgcolor: 'rgba(255,255,255,0.04)',
+    borderRadius: 1.5,
+    '& fieldset': { borderColor: 'rgba(255,255,255,0.12)' },
+    '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.18)' },
+    '&.Mui-focused fieldset': {
+      borderColor: 'rgba(124,77,255,0.5)',
+      boxShadow: '0 0 0 1px rgba(124,77,255,0.25)',
+    },
+  },
+  '& .MuiInputLabel-root': { color: 'rgba(233,236,245,0.6)' },
+  '& .MuiInputBase-input': { color: '#e9ecf5' },
+}
 
 export default function SignIn() {
   const navigate = useNavigate()
@@ -74,7 +97,6 @@ export default function SignIn() {
         navigate('/dashboard')
       }
     })
-
     return () => {
       if (unsubscribe) unsubscribe()
     }
@@ -83,13 +105,9 @@ export default function SignIn() {
   useEffect(() => {
     let timer
     if (errorMessage) {
-      timer = setTimeout(() => {
-        setErrorMessage('')
-      }, 3000)
+      timer = setTimeout(() => setErrorMessage(''), 3000)
     }
-    return () => {
-      clearTimeout(timer)
-    }
+    return () => clearTimeout(timer)
   }, [errorMessage])
 
   const handleChange = (e) => {
@@ -99,7 +117,6 @@ export default function SignIn() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
 
     if (userCredentials.email === '' || userCredentials.password === '') {
@@ -107,7 +124,6 @@ export default function SignIn() {
       setIsSubmitting(false)
       return
     }
-
     if (!emailRegex.test(userCredentials.email)) {
       setErrorMessage('Invalid email address')
       setIsSubmitting(false)
@@ -115,7 +131,6 @@ export default function SignIn() {
     }
 
     setIsSubmitting(true)
-
     try {
       const userCredential = await signInWithEmailAndPassword(
         getAuth(),
@@ -150,69 +165,105 @@ export default function SignIn() {
   }
 
   return (
-    <Grid container component="main" sx={{ height: '100vh' }}>
-      <CssBaseline />
+    <Box
+      sx={{
+        ...mainBackground,
+        width: '100vw',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflowX: 'hidden',
+      }}
+    >
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{
+          color: '#fff',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          bgcolor: 'rgba(0,0,0,0.6)',
+        }}
         open={isSubmitting || isSocialMediaSigningIn}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
+
+      <Box
+        component="div"
         sx={{
-          backgroundImage:
-            'url(https://images.unsplash.com/photo-1677212004257-103cfa6b59d0?q=80&w=2160&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)',
-          backgroundRepeat: 'no-repeat',
-          backgroundColor: (t) =>
-            t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          ...glassAuthCard,
+          p: 3,
         }}
-      />
-      <Grid
-        item
-        xs={12}
-        sm={8}
-        md={5}
-        component={Paper}
-        elevation={6}
-        square
-        sx={{ backgroundColor: '#f5f5f5' }}
       >
-        <Box
-          sx={{
-            my: 8,
-            mx: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-            <RocketLaunchIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5" color={'#375e6d'}>
-            Sign in
+        <Stack alignItems="center" spacing={1.5} sx={{ mb: 2.5 }}>
+          <Box
+            sx={{
+              width: 44,
+              height: 44,
+              borderRadius: 2,
+              bgcolor: 'rgba(124,77,255,0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <SportsFootballIcon sx={{ fontSize: 24, color: 'rgba(183,148,246,0.95)' }} />
+          </Box>
+          <Typography
+            component="h1"
+            sx={{
+              fontSize: '1.25rem',
+              fontWeight: 700,
+              color: '#e9ecf5',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            Sign in to EchoSphere
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'rgba(233,236,245,0.55)',
+              fontSize: '0.8125rem',
+              textAlign: 'center',
+            }}
+          >
+            Access your picks and league dashboard
+          </Typography>
+        </Stack>
+
+        <Box component="form" noValidate onSubmit={handleSubmit}>
+          {errorMessage && (
+            <Alert
+              severity="error"
+              sx={{
+                mb: 2,
+                bgcolor: 'rgba(255,82,82,0.1)',
+                color: '#ff8a80',
+                '& .MuiAlert-icon': { color: '#ff8a80' },
+                border: '1px solid rgba(255,82,82,0.2)',
+              }}
+            >
+              {errorMessage}
+            </Alert>
+          )}
+
+          <Stack spacing={1.5}>
             <TextField
-              margin="normal"
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Email address"
               name="email"
+              type="email"
               autoComplete="email"
               autoFocus
+              variant="outlined"
+              size="small"
               onChange={handleChange}
+              sx={inputSx}
             />
             <TextField
-              margin="normal"
               required
               fullWidth
               name="password"
@@ -220,52 +271,131 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              variant="outlined"
+              size="small"
               onChange={handleChange}
+              sx={inputSx}
             />
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-              Sign In
+          </Stack>
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            size="medium"
+            sx={{
+              mt: 2,
+              py: 1.25,
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              textTransform: 'none',
+              bgcolor: 'rgba(124,77,255,0.4)',
+              color: '#e9ecf5',
+              border: '1px solid rgba(255,255,255,0.12)',
+              '&:hover': {
+                bgcolor: 'rgba(124,77,255,0.5)',
+                borderColor: 'rgba(255,255,255,0.18)',
+              },
+            }}
+          >
+            Sign in
+          </Button>
+
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            flexWrap="wrap"
+            gap={1}
+            sx={{ mt: 2 }}
+          >
+            <Link
+              href="/forgot-password"
+              variant="body2"
+              sx={{
+                color: 'rgba(233,236,245,0.55)',
+                fontSize: '0.8rem',
+                textDecoration: 'none',
+                '&:hover': { color: 'rgba(183,148,246,0.9)', textDecoration: 'underline' },
+              }}
+            >
+              Forgot password?
+            </Link>
+            <Link
+              href="/Signup"
+              variant="body2"
+              sx={{
+                color: 'rgba(233,236,245,0.55)',
+                fontSize: '0.8rem',
+                textDecoration: 'none',
+                '&:hover': { color: 'rgba(183,148,246,0.9)', textDecoration: 'underline' },
+              }}
+            >
+              Create account
+            </Link>
+          </Stack>
+
+          <Stack direction="row" alignItems="center" spacing={1.5} sx={{ my: 2 }}>
+            <Box sx={{ flex: 1, height: 1, bgcolor: 'rgba(255,255,255,0.08)' }} />
+            <Typography
+              variant="caption"
+              sx={{ color: 'rgba(233,236,245,0.4)', fontSize: '0.75rem' }}
+            >
+              or
+            </Typography>
+            <Box sx={{ flex: 1, height: 1, bgcolor: 'rgba(255,255,255,0.08)' }} />
+          </Stack>
+
+          <Stack direction="row" spacing={1.5}>
+            <Button
+              fullWidth
+              variant="outlined"
+              size="small"
+              startIcon={<GoogleIcon sx={{ fontSize: 18 }} />}
+              onClick={handleGoogleSignIn}
+              sx={{
+                py: 1,
+                textTransform: 'none',
+                fontSize: '0.8rem',
+                fontWeight: 500,
+                bgcolor: 'rgba(255,255,255,0.04)',
+                borderColor: 'rgba(255,255,255,0.12)',
+                color: 'rgba(233,236,245,0.8)',
+                '&:hover': {
+                  borderColor: 'rgba(255,255,255,0.2)',
+                  bgcolor: 'rgba(255,255,255,0.06)',
+                },
+              }}
+            >
+              Google
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="/forgot-password" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/Signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-            <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, mb: 2 }}>
-              <Box sx={{ flex: 1, height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.12)' }} />
-              <Typography variant="body2" sx={{ mx: 2 }}>
-                or
-              </Typography>
-              <Box sx={{ flex: 1, height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.12)' }} />
-            </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<GoogleIcon />}
-                onClick={handleGoogleSignIn}
-              >
-                Sign in with Google
-              </Button>
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<FacebookIcon />}
-                onClick={handleFacebookSignIn}
-              >
-                Sign in with Facebook
-              </Button>
-            </Box>
-            <Footer sx={{ mt: 5 }} />
-          </Box>
+            <Button
+              fullWidth
+              variant="outlined"
+              size="small"
+              startIcon={<FacebookIcon sx={{ fontSize: 18 }} />}
+              onClick={handleFacebookSignIn}
+              sx={{
+                py: 1,
+                textTransform: 'none',
+                fontSize: '0.8rem',
+                fontWeight: 500,
+                bgcolor: 'rgba(255,255,255,0.04)',
+                borderColor: 'rgba(255,255,255,0.12)',
+                color: 'rgba(233,236,245,0.8)',
+                '&:hover': {
+                  borderColor: 'rgba(255,255,255,0.2)',
+                  bgcolor: 'rgba(255,255,255,0.06)',
+                },
+              }}
+            >
+              Facebook
+            </Button>
+          </Stack>
         </Box>
-      </Grid>
-    </Grid>
+      </Box>
+
+      <Footer sx={{ mt: 3, color: 'rgba(233,236,245,0.4)', fontSize: '0.75rem' }} />
+    </Box>
   )
 }

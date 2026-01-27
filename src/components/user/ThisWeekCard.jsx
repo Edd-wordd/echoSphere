@@ -16,6 +16,10 @@ import {
   ListItem,
   ListItemText,
 } from '@mui/material'
+import LockIcon from '@mui/icons-material/Lock'
+import LockOpenIcon from '@mui/icons-material/LockOpen'
+import AccessTimeIcon from '@mui/icons-material/AccessTime'
+import { glassyCard } from '../../styles/adminStyles'
 
 const formatCountdown = (lockAt) => {
   if (!lockAt) return null
@@ -130,84 +134,125 @@ const ThisWeekCard = ({
   }, [games, tieBreaker])
 
   return (
-    <Card
-      sx={{
-        backgroundColor: 'rgba(15,15,17,0.9)',
-        color: '#f5f7ff',
-        borderRadius: 2.5,
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.45)',
-        backdropFilter: 'blur(10px)',
-      }}
-    >
-      <CardContent sx={{ color: '#e9ecf5' }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+    <Card sx={glassyCard}>
+      <CardContent sx={{ color: '#e9ecf5', py: 2.5, px: 2.5 }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'rgba(233,236,245,0.95)' }}>
             This Week
           </Typography>
           <Chip
             label={`Week ${weekNumber}`}
             size="small"
             sx={{
-              background: 'linear-gradient(120deg, #7c4dff 0%, #00c853 100%)',
-              color: '#0b0c0f',
-              fontWeight: 700,
+              bgcolor: 'rgba(124,77,255,0.15)',
+              color: '#b794f6',
+              fontWeight: 600,
+              fontSize: '0.7rem',
+              height: 22,
             }}
           />
         </Stack>
-        <Stack spacing={1} mb={2}>
+        <Stack spacing={1.5} sx={{ mb: 2 }}>
           <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="body2" color="rgba(233,236,245,0.7)">
+            {isLocked ? (
+              <LockIcon sx={{ fontSize: 16, color: 'rgba(255,82,82,0.7)' }} />
+            ) : (
+              <LockOpenIcon sx={{ fontSize: 16, color: 'rgba(0,200,83,0.7)' }} />
+            )}
+            <Typography
+              variant="body2"
+              sx={{ color: 'rgba(233,236,245,0.7)', fontSize: '0.8125rem' }}
+            >
               Picks
             </Typography>
-            <Chip label={statusLabel} color={statusColor} size="small" />
+            <Chip label={statusLabel} color={statusColor} size="small" sx={{ height: 20 }} />
           </Stack>
-          <Typography variant="body2" color="rgba(233,236,245,0.7)">
-            Lock deadline
-          </Typography>
-          <Typography variant="body1">{lockDeadline}</Typography>
-          {!picksSubmitted && lockCountdown && (
-            <Typography variant="caption" color="error.main">
-              Locks in {lockCountdown}
-            </Typography>
-          )}
-          {picksSubmitted && !isLocked && (
-            <Typography variant="caption" color="text.secondary">
-              Edits allowed until kickoff
-            </Typography>
-          )}
-          {picksSubmitted && isLocked && (
-            <Typography variant="caption" color="text.secondary">
-              Picks are locked
-            </Typography>
-          )}
+          <Stack direction="row" spacing={1} alignItems="center">
+            <AccessTimeIcon sx={{ fontSize: 16, color: 'rgba(233,236,245,0.5)' }} />
+            <Stack spacing={0.25}>
+              <Typography
+                variant="body2"
+                sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.75rem' }}
+              >
+                Lock deadline
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: '#e9ecf5', fontWeight: 500, fontSize: '0.8125rem' }}
+              >
+                {lockDeadline}
+              </Typography>
+              {!picksSubmitted && lockCountdown && (
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'rgba(255,82,82,0.8)', fontSize: '0.7rem' }}
+                >
+                  Locks in {lockCountdown}
+                </Typography>
+              )}
+              {picksSubmitted && !isLocked && (
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.7rem' }}
+                >
+                  Edits allowed until kickoff
+                </Typography>
+              )}
+              {picksSubmitted && isLocked && (
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.7rem' }}
+                >
+                  Picks are locked
+                </Typography>
+              )}
+            </Stack>
+          </Stack>
         </Stack>
 
         {picksSubmitted && (
           <>
-            <Stack spacing={0.5} mb={2}>
-              <Typography variant="body2" color="rgba(233,236,245,0.7)">
+            <Stack spacing={0.75} sx={{ mb: 2 }}>
+              <Typography
+                variant="body2"
+                sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.75rem', fontWeight: 600 }}
+              >
                 Picks Overview
               </Typography>
-              <Typography variant="body2" fontWeight={600}>
+              <Typography
+                variant="body2"
+                sx={{ color: '#e9ecf5', fontWeight: 600, fontSize: '0.875rem' }}
+              >
                 Picks saved: {summary.total} / {games.length}
               </Typography>
               {summary.favorites + summary.underdogs > 0 && (
-                <Typography variant="body2" color="rgba(233,236,245,0.9)">
+                <Typography
+                  variant="body2"
+                  sx={{ color: 'rgba(233,236,245,0.7)', fontSize: '0.8125rem' }}
+                >
                   Favorites: {summary.favorites} • Underdogs: {summary.underdogs}
                 </Typography>
               )}
-              <Typography variant="body2" color="rgba(233,236,245,0.9)">
+              <Typography
+                variant="body2"
+                sx={{ color: 'rgba(233,236,245,0.7)', fontSize: '0.8125rem' }}
+              >
                 Home: {summary.home} • Away: {summary.away}
               </Typography>
               {progress.finishedCount > 0 && (
-                <Typography variant="body2" fontWeight={600}>
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#e9ecf5', fontWeight: 600, fontSize: '0.875rem' }}
+                >
                   This week (so far): {progress.wins}-{progress.losses} • Remaining:{' '}
                   {progress.remaining} {progress.remaining === 1 ? 'game' : 'games'}
                 </Typography>
               )}
               {tieInfo && (
-                <Typography variant="body2" color="rgba(233,236,245,0.7)">
+                <Typography
+                  variant="body2"
+                  sx={{ color: 'rgba(233,236,245,0.7)', fontSize: '0.8125rem' }}
+                >
                   Tie-breaker: {tieInfo.matchup}
                   {tieInfo.totalPoints != null ? ` • Your guess: ${tieInfo.totalPoints}` : ''}
                 </Typography>
@@ -219,7 +264,9 @@ const ThisWeekCard = ({
                   alignSelf: 'flex-start',
                   mt: 0.5,
                   textTransform: 'none',
-                  color: '#8be9c6',
+                  color: 'rgba(183,148,246,0.9)',
+                  fontSize: '0.8rem',
+                  '&:hover': { bgcolor: 'rgba(124,77,255,0.08)' },
                 }}
                 onClick={() => setModalOpen(true)}
               >
@@ -228,23 +275,35 @@ const ThisWeekCard = ({
             </Stack>
 
             {previews.length > 0 && (
-              <Stack spacing={1} mb={2}>
-                <Divider />
-                <Typography variant="body2" color="rgba(233,236,245,0.7)">
+              <Stack spacing={1} sx={{ mb: 2 }}>
+                <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
+                <Typography
+                  variant="body2"
+                  sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.75rem', fontWeight: 600 }}
+                >
                   Upcoming picks
                 </Typography>
                 {previews.map((preview) => (
-                  <Stack key={preview.game.id} spacing={0} alignItems="flex-start">
-                    <Typography variant="body2" fontWeight={600}>
+                  <Stack key={preview.game.id} spacing={0.25} alignItems="flex-start">
+                    <Typography
+                      variant="body2"
+                      sx={{ color: '#e9ecf5', fontWeight: 600, fontSize: '0.875rem' }}
+                    >
                       {preview.game.awayTeam.name} @ {preview.game.homeTeam.name}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography
+                      variant="caption"
+                      sx={{ color: 'rgba(233,236,245,0.6)', fontSize: '0.75rem' }}
+                    >
                       Picked:{' '}
                       {preview.pickedTeamId === preview.game.homeTeam.id
                         ? preview.game.homeTeam.name
                         : preview.game.awayTeam.name}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography
+                      variant="caption"
+                      sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.7rem' }}
+                    >
                       {new Date(preview.game.kickoffAt).toLocaleString()}
                     </Typography>
                   </Stack>
@@ -255,7 +314,11 @@ const ThisWeekCard = ({
                     type="button"
                     onClick={() => setModalOpen(true)}
                     underline="hover"
-                    sx={{ fontSize: 12, alignSelf: 'flex-start' }}
+                    sx={{
+                      fontSize: '0.75rem',
+                      alignSelf: 'flex-start',
+                      color: 'rgba(183,148,246,0.9)',
+                    }}
                   >
                     +{remaining} more
                   </Link>
@@ -273,17 +336,22 @@ const ThisWeekCard = ({
           disabled={picksSubmitted && isLocked}
           sx={{
             mt: 1,
-            fontWeight: 800,
+            py: 1.25,
+            fontWeight: 600,
+            fontSize: '0.9rem',
             textTransform: 'none',
-            background: !picksSubmitted
-              ? 'linear-gradient(120deg, #ff5252, #d32f2f)'
-              : 'linear-gradient(120deg, #7c4dff, #00c853)',
+            bgcolor: !picksSubmitted ? 'rgba(255,82,82,0.4)' : 'rgba(124,77,255,0.4)',
+            color: '#e9ecf5',
+            border: '1px solid rgba(255,255,255,0.12)',
             '&:hover': {
-              background: !picksSubmitted
-                ? 'linear-gradient(120deg, #ff6e6e, #e53935)'
-                : 'linear-gradient(120deg, #6c3ff0, #00b84a)',
+              bgcolor: !picksSubmitted ? 'rgba(255,82,82,0.5)' : 'rgba(124,77,255,0.5)',
+              borderColor: 'rgba(255,255,255,0.18)',
             },
-            boxShadow: '0 12px 30px rgba(0,0,0,0.4)',
+            '&.Mui-disabled': {
+              bgcolor: 'rgba(124,77,255,0.15)',
+              color: 'rgba(233,236,245,0.4)',
+              borderColor: 'rgba(255,255,255,0.06)',
+            },
           }}
         >
           {!picksSubmitted ? 'MAKE PICKS NOW' : isLocked ? 'PICKS LOCKED' : 'EDIT PICKS'}
@@ -296,33 +364,32 @@ const ThisWeekCard = ({
           maxWidth="sm"
           PaperProps={{
             sx: {
+              ...glassyCard,
               backgroundColor: 'rgba(10,10,12,0.95)',
-              color: '#f5f7ff',
-              border: '1px solid rgba(255,255,255,0.08)',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.55)',
-              backdropFilter: 'blur(12px)',
             },
           }}
         >
-          <DialogTitle sx={{ fontWeight: 700 }}>Picks for Week {weekNumber}</DialogTitle>
+          <DialogTitle sx={{ fontWeight: 700, color: '#e9ecf5' }}>
+            Picks for Week {weekNumber}
+          </DialogTitle>
           <DialogContent dividers sx={{ borderColor: 'rgba(255,255,255,0.08)' }}>
             {tieInfo && (
-              <Stack spacing={0.5} mb={2}>
-                <Typography variant="body2" fontWeight={600} color="#e9ecf5">
+              <Stack spacing={0.5} sx={{ mb: 2 }}>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: '#e9ecf5' }}>
                   Tie-breaker
                 </Typography>
-                <Typography variant="body2" color="rgba(233,236,245,0.9)">
+                <Typography variant="body2" sx={{ color: 'rgba(233,236,245,0.9)' }}>
                   {tieInfo.matchup}
                   {tieInfo.kickoff ? ` — ${tieInfo.kickoff}` : ''}
                 </Typography>
-                <Typography variant="body2" color="rgba(233,236,245,0.7)">
+                <Typography variant="body2" sx={{ color: 'rgba(233,236,245,0.7)' }}>
                   Your guess: {tieInfo.totalPoints != null ? tieInfo.totalPoints : '—'}
                 </Typography>
                 <Divider sx={{ mt: 1, borderColor: 'rgba(255,255,255,0.08)' }} />
               </Stack>
             )}
             {fullPickList.length === 0 ? (
-              <Typography variant="body2" color="rgba(233,236,245,0.7)">
+              <Typography variant="body2" sx={{ color: 'rgba(233,236,245,0.7)' }}>
                 No picks yet.
               </Typography>
             ) : (
@@ -333,14 +400,13 @@ const ThisWeekCard = ({
                       primary={item.label}
                       secondary={
                         <>
-                          <Typography component="span" variant="body2" color="#e9ecf5">
+                          <Typography component="span" variant="body2" sx={{ color: '#e9ecf5' }}>
                             Picked: {item.picked}
                           </Typography>
                           <Typography
                             component="span"
                             variant="caption"
-                            color="rgba(233,236,245,0.7)"
-                            sx={{ display: 'block' }}
+                            sx={{ color: 'rgba(233,236,245,0.7)', display: 'block' }}
                           >
                             {item.kickoff}
                           </Typography>
@@ -353,7 +419,7 @@ const ThisWeekCard = ({
             )}
           </DialogContent>
           <DialogActions sx={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-            <Button onClick={() => setModalOpen(false)} sx={{ color: '#8be9c6' }}>
+            <Button onClick={() => setModalOpen(false)} sx={{ color: 'rgba(183,148,246,0.9)' }}>
               Close
             </Button>
             <Button
@@ -362,9 +428,11 @@ const ThisWeekCard = ({
               variant="contained"
               sx={{
                 textTransform: 'none',
-                fontWeight: 700,
-                background: 'linear-gradient(120deg, #7c4dff, #00c853)',
-                '&:hover': { background: 'linear-gradient(120deg, #6c3ff0, #00b84a)' },
+                fontWeight: 600,
+                bgcolor: 'rgba(124,77,255,0.4)',
+                color: '#e9ecf5',
+                border: '1px solid rgba(255,255,255,0.12)',
+                '&:hover': { bgcolor: 'rgba(124,77,255,0.5)' },
               }}
             >
               {isLocked ? 'PICKS LOCKED' : 'Edit picks'}

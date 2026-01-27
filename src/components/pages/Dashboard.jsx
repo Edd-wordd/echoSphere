@@ -27,14 +27,16 @@ import { signOut } from 'firebase/auth'
 import { useNavigate, NavLink } from 'react-router-dom'
 import { auth } from '../../firebase/firebase'
 import { useAuthProfile } from '../../hooks/useAuthProfile'
-import { MainListItems, StyledListItemButton } from '../layout/ListItems'
+import { MainListItems, StyledListItemButton } from '../layout/SideNavBar'
 import ListSubheader from '@mui/material/ListSubheader'
 import ListItemText from '@mui/material/ListItemText'
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
-import RulesData from '../gameData/RulesData'
-import UsersDashboard from '../users/UsersDashboard'
-import MakePicks from './MakePicks'
-import SuperBowlSquares from './SuperBowlSquares'
+import Rules from '../user/Rules'
+import UsersDashboard from '../user/UsersDashboard'
+import MakePicks from '../user/MakePicks'
+import SuperBowlSquares from '../user/SuperBowlSquares'
+import LeaderBoard from '../user/LeaderBoard'
+import UserSettings from '../user/UserSettings'
 
 const drawerWidth = 240
 
@@ -175,32 +177,13 @@ export default function Dashboard() {
       case 'MakePicks':
         return <MakePicks />
       case 'Leaderboard':
-        return (
-          <Box>
-            <Typography variant="h5" gutterBottom>
-              Leaderboard
-            </Typography>
-            {/* Placeholder leaderboard page content */}
-            <Typography variant="body1" color="text.secondary">
-              View top records and points here.
-            </Typography>
-          </Box>
-        )
+        return <LeaderBoard />
       case 'Rules':
-        return <RulesData />
+        return <Rules />
       case 'SuperBowl':
         return <SuperBowlSquares />
       case 'Settings':
-        return (
-          <Box>
-            <Typography variant="h5" gutterBottom>
-              Settings
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Manage your account preferences and notifications.
-            </Typography>
-          </Box>
-        )
+        return <UserSettings />
       default:
         return <UsersDashboard onManagePicks={() => setSelectedComponent('MakePicks')} />
     }
