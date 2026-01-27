@@ -3,13 +3,11 @@ import {
   Card,
   CardContent,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
   Chip,
   Stack,
   Divider,
   Button,
+  Box,
 } from '@mui/material'
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
@@ -32,8 +30,10 @@ const movementChip = (delta) => {
 }
 
 const LeaderboardRow = ({ entry, isCurrent }) => (
-  <ListItem
-    disableGutters
+  <Stack
+    direction="row"
+    alignItems="center"
+    justifyContent="space-between"
     sx={{
       py: 0.75,
       px: 1.5,
@@ -44,62 +44,73 @@ const LeaderboardRow = ({ entry, isCurrent }) => (
         bgcolor: isCurrent ? 'rgba(124,77,255,0.1)' : 'rgba(255,255,255,0.02)',
       },
     }}
-    secondaryAction={
-      <Stack direction="row" alignItems="center" spacing={1.5}>
-        <Typography variant="body2" sx={{ color: 'rgba(233,236,245,0.7)', fontSize: '0.8125rem' }}>
-          {entry.points} pts
-        </Typography>
-        {isCurrent && (
-          <Chip
-            label="You"
-            size="small"
-            sx={{
-              bgcolor: 'rgba(124,77,255,0.2)',
-              color: '#b794f6',
-              fontWeight: 600,
-              fontSize: '0.65rem',
-              height: 20,
-            }}
-          />
-        )}
-        {movementChip(entry.rankDelta)}
-      </Stack>
-    }
   >
-    <ListItemText
-      primary={
-        <Stack direction="row" alignItems="center" spacing={1}>
-          {entry.rank === 1 && (
-            <EmojiEventsIcon sx={{ fontSize: 16, color: '#ffb74d' }} />
-          )}
-          <Typography
-            variant="body2"
-            sx={{
-              color: '#e9ecf5',
-              fontWeight: isCurrent ? 700 : 600,
-              fontSize: '0.875rem',
-            }}
-          >
-            {entry.rank}. {entry.displayName}
-          </Typography>
-        </Stack>
-      }
-      secondary={
-        <Typography variant="caption" sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.75rem' }}>
-          {entry.record}
-        </Typography>
-      }
-      primaryTypographyProps={{ sx: { mb: 0.25 } }}
-    />
-  </ListItem>
+    <Stack direction="row" alignItems="center" spacing={1.5} sx={{ flex: 1 }}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: '#e9ecf5',
+          fontWeight: isCurrent ? 700 : entry.rank <= 3 ? 600 : 500,
+          fontSize: '0.875rem',
+          minWidth: 28,
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
+        {entry.rank}.
+      </Typography>
+      {entry.rank === 1 && (
+        <EmojiEventsIcon sx={{ fontSize: 16, color: '#ffb74d' }} />
+      )}
+      <Typography
+        variant="body2"
+        sx={{
+          color: '#e9ecf5',
+          fontWeight: isCurrent ? 700 : 600,
+          fontSize: '0.875rem',
+          flex: 1,
+        }}
+      >
+        {entry.displayName}
+      </Typography>
+      {isCurrent && (
+        <Chip
+          label="You"
+          size="small"
+          sx={{
+            bgcolor: 'rgba(124,77,255,0.2)',
+            color: '#b794f6',
+            fontWeight: 600,
+            fontSize: '0.65rem',
+            height: 18,
+          }}
+        />
+      )}
+    </Stack>
+    <Stack direction="row" alignItems="center" spacing={1.5}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: '#e9ecf5',
+          fontWeight: 600,
+          fontSize: '0.875rem',
+          fontVariantNumeric: 'tabular-nums',
+          minWidth: 50,
+          textAlign: 'right',
+        }}
+      >
+        {entry.points}
+      </Typography>
+      {movementChip(entry.rankDelta)}
+    </Stack>
+  </Stack>
 )
 
 const LeaderboardCard = ({ entries = [], currentUserId, onViewFull }) => {
-  const { top10, me, isMeInTop10 } = useMemo(() => {
-    const top10 = entries.slice(0, 10)
+  const { top5, me, isMeInTop5 } = useMemo(() => {
+    const top5 = entries.slice(0, 5)
     const me = entries.find((e) => e.userId === currentUserId)
-    const isMeInTop10 = !!top10.find((e) => e.userId === currentUserId)
-    return { top10, me, isMeInTop10 }
+    const isMeInTop5 = !!top5.find((e) => e.userId === currentUserId)
+    return { top5, me, isMeInTop5 }
   }, [entries, currentUserId])
 
   return (
@@ -108,31 +119,32 @@ const LeaderboardCard = ({ entries = [], currentUserId, onViewFull }) => {
         <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'rgba(233,236,245,0.95)', mb: 1.5 }}>
           Leaderboard
         </Typography>
-        <List dense sx={{ py: 0 }}>
-          {top10.map((entry) => (
+        <Stack spacing={0.5} sx={{ mb: 1.5 }}>
+          {top5.map((entry) => (
             <LeaderboardRow
               key={entry.userId}
               entry={entry}
               isCurrent={entry.userId === currentUserId}
             />
           ))}
-          {!isMeInTop10 && me && (
+          {!isMeInTop5 && me && (
             <>
-              <Divider sx={{ my: 0.75, borderColor: 'rgba(255,255,255,0.06)' }} />
-              <ListItem disableGutters sx={{ justifyContent: 'center', py: 0.5 }}>
+              <Divider sx={{ my: 0.5, borderColor: 'rgba(255,255,255,0.06)' }} />
+              <Box sx={{ textAlign: 'center', py: 0.5 }}>
                 <Typography variant="caption" sx={{ color: 'rgba(233,236,245,0.3)', fontSize: '0.7rem' }}>
                   ...
                 </Typography>
-              </ListItem>
+              </Box>
               <LeaderboardRow entry={me} isCurrent />
             </>
           )}
-        </List>
+        </Stack>
         <Button
           variant="text"
           size="small"
+          fullWidth
           sx={{
-            mt: 1.5,
+            mt: 1,
             textTransform: 'none',
             color: 'rgba(183,148,246,0.9)',
             fontWeight: 600,

@@ -15,10 +15,17 @@ import {
   List,
   ListItem,
   ListItemText,
+  Box,
+  Grid,
+  Collapse,
+  alpha,
+  useTheme,
 } from '@mui/material'
 import LockIcon from '@mui/icons-material/Lock'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import { glassyCard } from '../../styles/adminStyles'
 
 const formatCountdown = (lockAt) => {
@@ -77,6 +84,111 @@ const getWeekProgress = (games = [], picks = []) => {
   return { wins, losses, remaining, finishedCount: finished.length }
 }
 
+// Reusable SummaryTile component
+const SummaryTile = ({ label, value, icon, theme }) => (
+  <Box
+    sx={{
+      p: 1.5,
+      borderRadius: 1.5,
+      bgcolor: alpha(theme.palette.primary.main, 0.08),
+      border: '1px solid rgba(255,255,255,0.05)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 70,
+    }}
+  >
+    {icon && (
+      <Box sx={{ mb: 0.5, display: 'flex', alignItems: 'center' }}>
+        {icon}
+      </Box>
+    )}
+    <Typography
+      variant="h6"
+      sx={{
+        color: '#e9ecf5',
+        fontWeight: 700,
+        fontSize: '1.125rem',
+        mb: 0.25,
+      }}
+    >
+      {value}
+    </Typography>
+    <Typography
+      variant="caption"
+      sx={{
+        color: 'rgba(233,236,245,0.6)',
+        fontSize: '0.7rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        fontWeight: 600,
+      }}
+    >
+      {label}
+    </Typography>
+  </Box>
+)
+
+// Reusable UpcomingGameRow component
+const UpcomingGameRow = ({ game, pickedTeamId }) => {
+  const pickedTeam = pickedTeamId === game.homeTeam.id ? game.homeTeam : game.awayTeam
+  const kickoffTime = new Date(game.kickoffAt).toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      sx={{
+        py: 0.75,
+        px: 1,
+        borderRadius: 1,
+        '&:hover': {
+          bgcolor: 'rgba(255,255,255,0.02)',
+        },
+      }}
+    >
+      <Stack direction="row" spacing={1} alignItems="center" sx={{ flex: 1 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: '#e9ecf5',
+            fontWeight: 600,
+            fontSize: '0.8125rem',
+            minWidth: 120,
+          }}
+        >
+          {game.awayTeam.abbrev || game.awayTeam.name} @ {game.homeTeam.abbrev || game.homeTeam.name}
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{
+            color: 'rgba(233,236,245,0.5)',
+            fontSize: '0.75rem',
+          }}
+        >
+          {pickedTeam.abbrev || pickedTeam.name}
+        </Typography>
+      </Stack>
+      <Typography
+        variant="caption"
+        sx={{
+          color: 'rgba(233,236,245,0.4)',
+          fontSize: '0.7rem',
+        }}
+      >
+        {kickoffTime}
+      </Typography>
+    </Stack>
+  )
+}
+
 const ThisWeekCard = ({
   weekNumber,
   picksSubmitted,
@@ -88,14 +200,16 @@ const ThisWeekCard = ({
   onManagePicks,
   onViewAllPicks,
 }) => {
+  const theme = useTheme()
   const [modalOpen, setModalOpen] = useState(false)
+  const [detailsExpanded, setDetailsExpanded] = useState(false)
   const lockCountdown = formatCountdown(lockAt)
   const isLocked = lockCountdown === 'Locked'
-  const statusLabel = !picksSubmitted ? 'Not Submitted' : isLocked ? 'Locked' : 'Submitted'
+  const statusLabel = !picksSubmitted ? 'Not Submitted' : isLocked ? 'Locked' : 'Open'
   const statusColor = !picksSubmitted ? 'error' : isLocked ? 'default' : 'success'
   const summary = useMemo(() => getPicksSummary(games, picks), [games, picks])
   const previews = useMemo(() => getPreviewList(games, picks, 4), [games, picks])
-  const remaining = Math.max(0, summary.total - previews.length)
+  const remaining = Math.max(0, games.length - summary.total)
   const progress = useMemo(() => getWeekProgress(games, picks), [games, picks])
   const fullPickList = useMemo(() => {
     const picksByGame = picks.reduce((acc, p) => ({ ...acc, [p.gameId]: p.pickedTeamId }), {})
@@ -152,180 +266,238 @@ const ThisWeekCard = ({
             }}
           />
         </Stack>
-        <Stack spacing={1.5} sx={{ mb: 2 }}>
-          <Stack direction="row" spacing={1} alignItems="center">
-            {isLocked ? (
-              <LockIcon sx={{ fontSize: 16, color: 'rgba(255,82,82,0.7)' }} />
-            ) : (
-              <LockOpenIcon sx={{ fontSize: 16, color: 'rgba(0,200,83,0.7)' }} />
-            )}
-            <Typography
-              variant="body2"
-              sx={{ color: 'rgba(233,236,245,0.7)', fontSize: '0.8125rem' }}
-            >
-              Picks
-            </Typography>
-            <Chip label={statusLabel} color={statusColor} size="small" sx={{ height: 20 }} />
-          </Stack>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <AccessTimeIcon sx={{ fontSize: 16, color: 'rgba(233,236,245,0.5)' }} />
-            <Stack spacing={0.25}>
-              <Typography
-                variant="body2"
-                sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.75rem' }}
-              >
-                Lock deadline
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: '#e9ecf5', fontWeight: 500, fontSize: '0.8125rem' }}
-              >
-                {lockDeadline}
-              </Typography>
-              {!picksSubmitted && lockCountdown && (
-                <Typography
-                  variant="caption"
-                  sx={{ color: 'rgba(255,82,82,0.8)', fontSize: '0.7rem' }}
-                >
-                  Locks in {lockCountdown}
-                </Typography>
-              )}
-              {picksSubmitted && !isLocked && (
-                <Typography
-                  variant="caption"
-                  sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.7rem' }}
-                >
-                  Edits allowed until kickoff
-                </Typography>
-              )}
-              {picksSubmitted && isLocked && (
-                <Typography
-                  variant="caption"
-                  sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.7rem' }}
-                >
-                  Picks are locked
-                </Typography>
-              )}
-            </Stack>
-          </Stack>
-        </Stack>
 
+        {/* Compact Summary Tiles */}
+        {picksSubmitted && (
+          <Grid container spacing={1.5} sx={{ mb: 2 }}>
+            <Grid item xs={6} sm={3}>
+              <SummaryTile
+                label="Picks In"
+                value={`${summary.total}/${games.length}`}
+                theme={theme}
+              />
+            </Grid>
+            <Grid item xs={6} sm={3}>
+              <SummaryTile
+                label="Status"
+                value={statusLabel}
+                icon={
+                  isLocked ? (
+                    <LockIcon sx={{ fontSize: 18, color: 'rgba(255,82,82,0.7)' }} />
+                  ) : (
+                    <LockOpenIcon sx={{ fontSize: 18, color: 'rgba(0,200,83,0.7)' }} />
+                  )
+                }
+                theme={theme}
+              />
+            </Grid>
+            <Grid item xs={6} sm={3}>
+              <SummaryTile
+                label="Record This Week"
+                value={
+                  progress.finishedCount > 0
+                    ? `${progress.wins}–${progress.losses}`
+                    : '—'
+                }
+                theme={theme}
+              />
+            </Grid>
+            <Grid item xs={6} sm={3}>
+              <SummaryTile
+                label="Remaining"
+                value={`${progress.remaining} ${progress.remaining === 1 ? 'game' : 'games'}`}
+                theme={theme}
+              />
+            </Grid>
+          </Grid>
+        )}
+
+        {/* Collapsible Details Section */}
         {picksSubmitted && (
           <>
-            <Stack spacing={0.75} sx={{ mb: 2 }}>
-              <Typography
-                variant="body2"
-                sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.75rem', fontWeight: 600 }}
+            <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)', my: 1.5 }} />
+            <Button
+              variant="text"
+              size="small"
+              onClick={() => setDetailsExpanded(!detailsExpanded)}
+              endIcon={detailsExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              sx={{
+                textTransform: 'none',
+                color: 'rgba(183,148,246,0.9)',
+                fontSize: '0.8rem',
+                fontWeight: 500,
+                px: 0,
+                '&:hover': { bgcolor: 'rgba(124,77,255,0.08)' },
+              }}
+            >
+              View details
+            </Button>
+            <Collapse in={detailsExpanded}>
+              <Box sx={{ mt: 1.5 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <Stack spacing={1}>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.7rem', fontWeight: 600 }}
+                      >
+                        Lock deadline
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: '#e9ecf5', fontSize: '0.8125rem' }}
+                      >
+                        {lockDeadline}
+                      </Typography>
+                      {summary.favorites + summary.underdogs > 0 && (
+                        <>
+                          <Typography
+                            variant="caption"
+                            sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.7rem', fontWeight: 600, mt: 1 }}
+                          >
+                            Favorites / Underdogs
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{ color: '#e9ecf5', fontSize: '0.8125rem' }}
+                          >
+                            {summary.favorites} / {summary.underdogs}
+                          </Typography>
+                        </>
+                      )}
+                      <Typography
+                        variant="caption"
+                        sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.7rem', fontWeight: 600, mt: 1 }}
+                      >
+                        Home / Away
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: '#e9ecf5', fontSize: '0.8125rem' }}
+                      >
+                        {summary.home} / {summary.away}
+                      </Typography>
+                    </Stack>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Stack spacing={1}>
+                      {tieInfo && (
+                        <>
+                          <Typography
+                            variant="caption"
+                            sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.7rem', fontWeight: 600 }}
+                          >
+                            Tie-breaker
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{ color: '#e9ecf5', fontSize: '0.8125rem' }}
+                          >
+                            {tieInfo.matchup}
+                          </Typography>
+                          {tieInfo.totalPoints != null && (
+                            <>
+                              <Typography
+                                variant="caption"
+                                sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.7rem', fontWeight: 600, mt: 1 }}
+                              >
+                                Your guess
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{ color: '#e9ecf5', fontSize: '0.8125rem' }}
+                              >
+                                {tieInfo.totalPoints} points
+                              </Typography>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </Stack>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Collapse>
+          </>
+        )}
+
+        {/* Upcoming Picks - Compact List */}
+        {picksSubmitted && previews.length > 0 && (
+          <Stack spacing={1} sx={{ mt: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.75rem', fontWeight: 600 }}
+            >
+              Upcoming picks
+            </Typography>
+            <Box
+              sx={{
+                borderRadius: 1,
+                border: '1px solid rgba(255,255,255,0.06)',
+                bgcolor: 'rgba(255,255,255,0.02)',
+                p: 0.5,
+              }}
+            >
+              {previews.map((preview) => (
+                <UpcomingGameRow
+                  key={preview.game.id}
+                  game={preview.game}
+                  pickedTeamId={preview.pickedTeamId}
+                />
+              ))}
+            </Box>
+            {remaining > 0 && (
+              <Button
+                size="small"
+                variant="text"
+                onClick={() => setModalOpen(true)}
+                sx={{
+                  textTransform: 'none',
+                  color: 'rgba(183,148,246,0.9)',
+                  fontSize: '0.75rem',
+                  alignSelf: 'flex-start',
+                  '&:hover': { bgcolor: 'rgba(124,77,255,0.08)' },
+                }}
               >
-                Picks Overview
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: '#e9ecf5', fontWeight: 600, fontSize: '0.875rem' }}
-              >
-                Picks saved: {summary.total} / {games.length}
-              </Typography>
-              {summary.favorites + summary.underdogs > 0 && (
-                <Typography
-                  variant="body2"
-                  sx={{ color: 'rgba(233,236,245,0.7)', fontSize: '0.8125rem' }}
-                >
-                  Favorites: {summary.favorites} • Underdogs: {summary.underdogs}
-                </Typography>
+                +{remaining} more
+              </Button>
+            )}
+          </Stack>
+        )}
+
+        {!picksSubmitted && (
+          <Stack spacing={1} sx={{ mb: 2 }}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              {isLocked ? (
+                <LockIcon sx={{ fontSize: 16, color: 'rgba(255,82,82,0.7)' }} />
+              ) : (
+                <LockOpenIcon sx={{ fontSize: 16, color: 'rgba(0,200,83,0.7)' }} />
               )}
               <Typography
                 variant="body2"
                 sx={{ color: 'rgba(233,236,245,0.7)', fontSize: '0.8125rem' }}
               >
-                Home: {summary.home} • Away: {summary.away}
+                Status: {statusLabel}
               </Typography>
-              {progress.finishedCount > 0 && (
-                <Typography
-                  variant="body2"
-                  sx={{ color: '#e9ecf5', fontWeight: 600, fontSize: '0.875rem' }}
-                >
-                  This week (so far): {progress.wins}-{progress.losses} • Remaining:{' '}
-                  {progress.remaining} {progress.remaining === 1 ? 'game' : 'games'}
-                </Typography>
-              )}
-              {tieInfo && (
-                <Typography
-                  variant="body2"
-                  sx={{ color: 'rgba(233,236,245,0.7)', fontSize: '0.8125rem' }}
-                >
-                  Tie-breaker: {tieInfo.matchup}
-                  {tieInfo.totalPoints != null ? ` • Your guess: ${tieInfo.totalPoints}` : ''}
-                </Typography>
-              )}
-              <Button
-                size="small"
-                variant="text"
-                sx={{
-                  alignSelf: 'flex-start',
-                  mt: 0.5,
-                  textTransform: 'none',
-                  color: 'rgba(183,148,246,0.9)',
-                  fontSize: '0.8rem',
-                  '&:hover': { bgcolor: 'rgba(124,77,255,0.08)' },
-                }}
-                onClick={() => setModalOpen(true)}
-              >
-                View all picks
-              </Button>
             </Stack>
-
-            {previews.length > 0 && (
-              <Stack spacing={1} sx={{ mb: 2 }}>
-                <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
-                <Typography
-                  variant="body2"
-                  sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.75rem', fontWeight: 600 }}
-                >
-                  Upcoming picks
-                </Typography>
-                {previews.map((preview) => (
-                  <Stack key={preview.game.id} spacing={0.25} alignItems="flex-start">
-                    <Typography
-                      variant="body2"
-                      sx={{ color: '#e9ecf5', fontWeight: 600, fontSize: '0.875rem' }}
-                    >
-                      {preview.game.awayTeam.name} @ {preview.game.homeTeam.name}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: 'rgba(233,236,245,0.6)', fontSize: '0.75rem' }}
-                    >
-                      Picked:{' '}
-                      {preview.pickedTeamId === preview.game.homeTeam.id
-                        ? preview.game.homeTeam.name
-                        : preview.game.awayTeam.name}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.7rem' }}
-                    >
-                      {new Date(preview.game.kickoffAt).toLocaleString()}
-                    </Typography>
-                  </Stack>
-                ))}
-                {remaining > 0 && (
-                  <Link
-                    component="button"
-                    type="button"
-                    onClick={() => setModalOpen(true)}
-                    underline="hover"
-                    sx={{
-                      fontSize: '0.75rem',
-                      alignSelf: 'flex-start',
-                      color: 'rgba(183,148,246,0.9)',
-                    }}
-                  >
-                    +{remaining} more
-                  </Link>
-                )}
-              </Stack>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <AccessTimeIcon sx={{ fontSize: 16, color: 'rgba(233,236,245,0.5)' }} />
+              <Typography
+                variant="body2"
+                sx={{ color: 'rgba(233,236,245,0.7)', fontSize: '0.8125rem' }}
+              >
+                Lock deadline: {lockDeadline}
+              </Typography>
+            </Stack>
+            {lockCountdown && lockCountdown !== 'Locked' && (
+              <Typography
+                variant="caption"
+                sx={{ color: 'rgba(255,82,82,0.8)', fontSize: '0.7rem' }}
+              >
+                Locks in {lockCountdown}
+              </Typography>
             )}
-          </>
+          </Stack>
         )}
 
         <Button
