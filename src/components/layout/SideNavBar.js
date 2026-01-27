@@ -15,17 +15,26 @@ import PeopleIcon from '@mui/icons-material/People'
 import HistoryIcon from '@mui/icons-material/History'
 
 export const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
-  transition: 'background 0.2s ease',
+  transition: 'all 0.2s ease',
   '&:hover': {
-    backgroundColor: 'rgba(124, 77, 255, 0.35)',
-    color: '#e8ebff',
+    backgroundColor: 'rgba(124, 77, 255, 0.5)',
+    color: '#fff',
+    borderLeft: '3px solid rgba(124, 77, 255, 0.8)',
+    '& .MuiListItemIcon-root': {
+      color: '#fff',
+    },
   },
   '&.Mui-selected': {
     backgroundColor: 'rgba(124, 77, 255, 0.25)',
     color: '#c5b8ff',
+    borderLeft: '3px solid rgba(124, 77, 255, 0.6)',
   },
   '&.Mui-selected:hover': {
-    backgroundColor: 'rgba(124, 77, 255, 0.45)',
+    backgroundColor: 'rgba(124, 77, 255, 0.55)',
+    borderLeft: '3px solid rgba(124, 77, 255, 0.9)',
+    '& .MuiListItemIcon-root': {
+      color: '#fff',
+    },
   },
 }))
 

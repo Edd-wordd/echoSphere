@@ -1,9 +1,9 @@
 import React from 'react'
 import { Typography, Grid, Box } from '@mui/material'
-import ThisWeekCard from '../dashboard/ThisWeekCard'
-import LeaderboardCard from '../dashboard/LeaderboardCard'
-import UserRecapCard from '../dashboard/UserRecapCard'
-import NextGameCard from '../dashboard/NextGameCard'
+import ThisWeekCard from './ThisWeekCard'
+import LeaderboardCard from './DashboardLeaderCard'
+import UserRecapCard from './UserRecapCard'
+import NextGameCard from './NextGameCard'
 
 const UsersDashboard = ({ onManagePicks = () => {}, onViewLeaderboard = () => {} }) => {
   const dashboardModel = {
@@ -62,7 +62,7 @@ const UsersDashboard = ({ onManagePicks = () => {}, onViewLeaderboard = () => {}
     },
     weekResult: {
       completed: true,
-      message: '🏆 You went 10–6 last week — tied for 1st',
+      message: 'You went 10–6 last week — tied for 1st',
     },
   }
 
@@ -130,29 +130,33 @@ const UsersDashboard = ({ onManagePicks = () => {}, onViewLeaderboard = () => {}
   }
 
   return (
-    <Box padding={2} sx={{ color: '#e9ecf5' }}>
+    <Box sx={{ color: '#e9ecf5', p: 2 }}>
       {dashboardModel.weekResult?.completed && dashboardModel.weekResult.message && (
         <Box
-          mb={2}
-          p={2}
           sx={{
-            background: 'linear-gradient(120deg, rgba(124,77,255,0.22), rgba(0,200,83,0.18))',
-            color: '#f5f7ff',
+            mb: 2.5,
+            p: 2,
+            bgcolor: 'rgba(124,77,255,0.1)',
+            color: '#e9ecf5',
             borderRadius: 2,
-            border: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: '0 12px 30px rgba(0,0,0,0.35)',
+            border: '1px solid rgba(124,77,255,0.2)',
           }}
         >
-          <Typography variant="body1" fontWeight={700}>
+          <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.875rem' }}>
             {dashboardModel.weekResult.message}
           </Typography>
         </Box>
       )}
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 800 }}>
-        Family NFL Picks
-      </Typography>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, color: 'rgba(233,236,245,0.95)', mb: 0.5 }}>
+          Dashboard
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'rgba(233,236,245,0.5)', fontSize: '0.8125rem' }}>
+          Your picks, progress, and standings.
+        </Typography>
+      </Box>
 
-      <Grid container spacing={3} justifyContent="center">
+      <Grid container spacing={2.5}>
         <Grid item xs={12} md={6}>
           <ThisWeekCard
             weekNumber={thisWeek.weekNumber}
@@ -161,6 +165,7 @@ const UsersDashboard = ({ onManagePicks = () => {}, onViewLeaderboard = () => {}
             lockAt={thisWeek.lockAt}
             games={thisWeek.games}
             picks={thisWeek.picks}
+            tieBreaker={thisWeek.tieBreaker}
             onManagePicks={onManagePicks}
           />
         </Grid>
